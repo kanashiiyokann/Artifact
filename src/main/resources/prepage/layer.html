@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>预置弹窗</title>
+    <style type="text/css">
+        .required-tag {
+            color: red;
+        }
+.formTable{
+    width:500px;
+}
+.formTable th{
+    text-align: right;
+    padding:2px 8px 2px 0px;
+}
+        .formTable td{
+            display:inline-table;
+            width:80%;
+        }
+    </style>
+</head>
+<body>
+<form>
+    <table class="formTable">
+        <tr>
+            <th><span class="required-tag">*</span>类型</th>
+            <td><select>
+                <option value="1">废单</option>
+                <option value="2">退单</option>
+            </select></td>
+        </tr>
+        <tr>
+            <th><span class="required-tag">*</span>申请理由</th>
+            <td><select>
+                <option value="1">渠道拒绝</option>
+                <option value="2">客户放弃</option>
+            </select></td>
+        </tr>
+        <tr>
+            <th>备注</th>
+            <td><textarea placeholder="限400字以内" maxlength="400" ></textarea></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
