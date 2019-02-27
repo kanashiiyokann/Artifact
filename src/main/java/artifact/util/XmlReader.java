@@ -1,4 +1,4 @@
-package cn.yayi.util;
+package artifact.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;

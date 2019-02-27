@@ -1,15 +1,11 @@
-package cn.yayi.util;
+package artifact.util;
 
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Convertor {
     private String datePattern = "";
@@ -112,9 +108,9 @@ public class Convertor {
                 String pattern = this.datePattern;
                 if (pattern.length() == 0) {
                     pattern = value.toString();
-                    pattern = getPattern(pattern);
+
                 }
-                SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+                SimpleDateFormat sdf =getPattern(pattern);
                 try {
                     value = sdf.parse(valStr);
                 } catch (ParseException e) {
@@ -135,14 +131,14 @@ public class Convertor {
      * @param simpleTimeStr
      * @return
      */
-    private static String getPattern(String simpleTimeStr) {
+    private static SimpleDateFormat getPattern(String simpleTimeStr) {
         String[] holders = new String[]{"yyyy", "MM", "dd", "HH", "mm", "ss"};
         simpleTimeStr=simpleTimeStr.trim();
         String reg="[0-9]+";
         for(int i=0;i<holders.length;i++){
             simpleTimeStr=simpleTimeStr.replaceFirst(reg,holders[i]);
         }
-    return simpleTimeStr;
+    return new SimpleDateFormat(simpleTimeStr);
     }
 
     /**

@@ -1,4 +1,4 @@
-package cn.yayi.util;
+package artifact.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
