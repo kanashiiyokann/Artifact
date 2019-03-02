@@ -2,12 +2,13 @@ package artifact;
 
 import artifact.modules.user.entity.User;
 import artifact.modules.user.service.impl.UserServiceImpl;
+import com.mongodb.BasicDBObject;
+import org.bson.Document;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -48,14 +49,23 @@ public class SimpleTest {
             }
         };
         Aggregation aggregation = Aggregation.newAggregation(
-                Aggregation.match(Criteria.where("companyId").is(companyId)),
-                Aggregation.group("companyId")
-                        .sum(ConditionalOperators.when(ArrayOperators.In.arrayOf("state").containsValue(new int[]{2, 3, 4})).then(1).otherwise(0)).as("backed")
+               // Aggregation.match(Criteria.where("companyId").is(companyId)),
+                Aggregation.group()
+                        .sum(ConditionalOperators.when(ArrayOperators.In.arrayOf("state").containsValue(new int[]{2,3})).then(1).otherwise(0)).as("abnormal")
                         .count().as("total")
         );
-        AggregationResults<Map> result = mongoTemplate.aggregate(aggregation, "bill", Map.class);
+        AggregationResults<Map> result = mongoTemplate.aggregate(aggregation, "User", Map.class);
         List<Map> data=result.getMappedResults();
 
+    }
+
+    @Test
+    public void mongoRawQueryTest(){
+        String query="db.getCollection(\"User\").aggregate([ { \"$group\" : { \"_id\" :  null  , \"abnormal\" : { \"$sum\" : { \"$cond\" : { \"if\" : { \"$in\" : [ \"$state\",[ 2 , 3] ]} , \"then\" : 1 , \"else\" : 0}}} , \"total\" : { \"$sum\" : 1}}}]);";
+
+        BasicDBObject command=new BasicDBObject();
+        command.put("$eval",query);
+         Document whatINeed= mongoTemplate.getDb().runCommand(command);
     }
 
 }
