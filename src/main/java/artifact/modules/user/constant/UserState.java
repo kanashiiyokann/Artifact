@@ -8,4 +8,6 @@ public interface UserState {
     Integer STATE_NORMAL=1;
     @Text("锁定")
     Integer STATE_LOCKED=2;
+    @Text("禁用")
+    Integer STATE_FORBIDDEN=3;
 }

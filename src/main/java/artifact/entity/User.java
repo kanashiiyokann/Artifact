@@ -1,6 +1,6 @@
 package artifact.entity;
 
-import artifact.constant.UserState;
+import artifact.modules.user.constant.UserState;
 
 public class User extends BaseEntity implements UserState {
     private String name;
