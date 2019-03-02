@@ -1,11 +1,15 @@
 package artifact.common.dao.impl;
 
 import artifact.common.dao.BaseDao;
+import com.mongodb.BasicDBObject;
+import com.mongodb.CommandResult;
+import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,4 +63,30 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
     public int count(Map<String, Object> para) {
         return 0;
     }
+
+    /**
+     * 执行mongodb原生语句
+     * @param query
+     * @return
+     */
+    public Map rawQuery(String query){
+        BasicDBObject command=new BasicDBObject();
+        command.put("$eval",query);
+        Document data= mongoTemplate.getDb().runCommand(command);
+        Map result=new HashMap();
+        for(String key :  data.keySet()){
+            result.put(key,data.get(key));
+        }
+        return data;
+    }
+
+//      低版本使用下面方法
+//    public Map rawQuery(String query){
+//        CommandResult data= mongoTemplate.getDb().doEval(query);
+//        Map result=new HashMap();
+//        for(String key :  data.keySet()){
+//            result.put(key,data.get(key));
+//        }
+//        return data;
+//    }
 }

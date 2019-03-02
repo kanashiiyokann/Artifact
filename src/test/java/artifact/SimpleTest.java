@@ -12,10 +12,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -65,7 +62,12 @@ public class SimpleTest {
 
         BasicDBObject command=new BasicDBObject();
         command.put("$eval",query);
-         Document whatINeed= mongoTemplate.getDb().runCommand(command);
+         Document data= mongoTemplate.getDb().runCommand(command);
+         Map result=new HashMap();
+      for(String key :  data.keySet()){
+          result.put(key,data.get(key));
+      }
+
     }
 
 }
