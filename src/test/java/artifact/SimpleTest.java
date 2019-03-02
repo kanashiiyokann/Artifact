@@ -6,10 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
-import org.springframework.data.mongodb.core.aggregation.ConditionalOperators;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -58,7 +55,6 @@ public class SimpleTest {
         );
         AggregationResults<Map> result = mongoTemplate.aggregate(aggregation, "bill", Map.class);
         List<Map> data=result.getMappedResults();
-
 
     }
 

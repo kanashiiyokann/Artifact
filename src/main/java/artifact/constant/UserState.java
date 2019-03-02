@@ -1,7 +1,7 @@
 package artifact.constant;
 
 
-import artifact.annotation.Text;
+import artifact.common.annotation.Text;
 
 public interface UserState {
 
