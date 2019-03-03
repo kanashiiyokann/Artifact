@@ -12,7 +12,7 @@
 	<artifactId>artifact</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>artifact</name>
-	<description>Demo project for Spring Boot</description>
+    <description>project articfavt by Spring Boot</description>
 
 	<properties>
 		<java.version>8</java.version>

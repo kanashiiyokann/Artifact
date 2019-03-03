@@ -45,4 +45,13 @@ public class SimpleTest {
 
     }
 
+    @Test
+    public void updateTest() throws Exception {
+
+        User user = userService.find(1L);
+        user.setState(User.STATE_FORBIDDEN);
+        userService.update(user);
+
+    }
+
 }

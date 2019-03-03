@@ -7,11 +7,11 @@ public interface BaseDao<T> {
 
     void save(T entity);
 
-    void update(T entity);
+    void update(T entity) throws Exception;
 
     void delete(Long ids);
 
-    T find(Long id);
+    T find(Long id) throws Exception;
 
     List<T> list();
 

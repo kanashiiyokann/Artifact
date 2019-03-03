@@ -9,7 +9,7 @@ public class User extends BaseEntity implements UserState {
     private String name;
     private String pwd;
     private Integer age;
-    private Integer state=User.STATE_NORMAL;
+    private Integer state;
 
     public Integer getState() {
         return state;
