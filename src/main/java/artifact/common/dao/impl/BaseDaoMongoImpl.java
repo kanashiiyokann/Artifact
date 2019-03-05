@@ -17,6 +17,9 @@ import java.util.*;
 
 @Repository
 public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
+
+    private String SEPARATOR = ":";
+    private String PRIMARY_KEY = "id";
     @Resource
     private MongoTemplate mongoTemplate;
 
@@ -37,13 +40,18 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
 
     @Override
     public void update(T entity) throws Exception {
-        update(entity, "id", null);
+        update(entity, null);
     }
 
-    private void update(T entity, String primaryKey, Object[] ignores) throws Exception {
+    public void update(T entity, Object[] ignores) throws Exception {
+
+
         Map<String, Object> map = parse(entity);
-        Object primaryValue = map.get(primaryKey);
-        map.remove(primaryKey);
+        Object obj = map.get(PRIMARY_KEY);
+        if (obj == null) {
+            throw new Exception("lack of the value for primary key:id ！");
+        }
+        map.remove(PRIMARY_KEY);
         Update update = new Update();
 
         List ignoreList = Arrays.asList(ignores);
@@ -53,7 +61,7 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
                 update.set(key, value);
             }
         }
-        mongoTemplate.updateFirst(new Query().addCriteria(Criteria.where(primaryKey).is(primaryValue)), update, getGenericClass());
+        mongoTemplate.updateFirst(new Query().addCriteria(Criteria.where(PRIMARY_KEY).is(obj)), update, getGenericClass());
     }
 
 
@@ -65,8 +73,8 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
     @Override
     public T find(Long id) throws Exception {
 
-        List<T> retList = mongoTemplate.find(new Query().addCriteria(Criteria.where("_id").is(id)), getGenericClass());
-        // mongoTemplate.findById()
+        List<T> retList = mongoTemplate.find(new Query(Criteria.where("id").is(id)), getGenericClass());
+
         if (retList == null || retList.size() != 1) {
             throw new Exception("no unque record found!");
         }
@@ -76,11 +84,9 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
     @Override
     public List<T> list(Map<String, Object> para) throws Exception {
         Query query = new Query();
-        Criteria criteria = null;
         for (String key : para.keySet()) {
-            criteria = generateFilter(key, para.get(key), criteria);
+            query.addCriteria(generateCriteria(key, para.get(key)));
         }
-        query.addCriteria(criteria);
         return mongoTemplate.find(query, getGenericClass());
     }
 
@@ -135,47 +141,28 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
         Field[] fields = clazz.getDeclaredFields();
         fieldSet.addAll(Arrays.asList(fields));
         while (!clazz.getSuperclass().getSimpleName().toLowerCase().equals("object")) {
-            fieldSet.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
+            clazz = clazz.getSuperclass();
+            fieldSet.addAll(Arrays.asList(clazz.getDeclaredFields()));
         }
         for (Field field : fieldSet) {
+            field.setAccessible(true);
             ret.put(field.getName(), field.get(entity));
         }
         return ret;
     }
 
-    private Criteria generateFilter(String keyStr, Object value, Criteria criteria) throws Exception {
-        String seperator = ":";
-        String methodName = null, key = null;
+    private Criteria generateCriteria(String key, Object value) throws Exception {
 
-        if (keyStr.indexOf(seperator) > -1) {
-            String[] arr = keyStr.split(":");
+        String methodName = "is";
+
+        if (key.indexOf(SEPARATOR) > -1) {
+            String[] arr = key.split(":");
             methodName = arr[0];
             key = arr[1];
-        } else {
-            key = keyStr;
         }
-        Map<String, String> nickNames = new HashMap(2) {
-            {
-                put("lk", "regex");
-                put(null, "is");
-            }
-        };
-
-        //别名
-        if (nickNames.containsKey(methodName)) {
-            methodName = nickNames.get(methodName);
-        }
-        if (criteria == null) {
-            criteria = Criteria.where(key);
-        } else {
-            criteria.and(key);
-        }
-        if (methodName.equals("regex")) {
-            criteria.regex(value.toString());
-        } else {
-            Method method = Criteria.class.getDeclaredMethod(methodName, Object.class);
-            method.invoke(criteria, value);
-        }
+        Criteria criteria = Criteria.where(key);
+        Method method = Criteria.class.getDeclaredMethod(methodName, Object.class);
+        method.invoke(criteria, value);
 
         return criteria;
     }

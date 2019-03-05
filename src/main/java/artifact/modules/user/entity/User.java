@@ -4,7 +4,7 @@ import artifact.common.entity.BaseEntity;
 import artifact.modules.user.constant.UserState;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "user")
+@Document(collection = "User")
 public class User extends BaseEntity implements UserState {
     private String name;
     private String pwd;
