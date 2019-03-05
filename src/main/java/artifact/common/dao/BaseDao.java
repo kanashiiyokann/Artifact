@@ -13,9 +13,8 @@ public interface BaseDao<T> {
 
     T find(Long id) throws Exception;
 
-    List<T> list();
+    List<T> list(Map<String, Object> para)throws Exception;
 
-    List<T> section(Map<String, Object> para);
 
     int count(Map<String, Object> para);
 }

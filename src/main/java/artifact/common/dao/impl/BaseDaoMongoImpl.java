@@ -11,13 +11,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 @Repository
 public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
-
-    private String primaryKey = "id";
     @Resource
     private MongoTemplate mongoTemplate;
 
@@ -38,10 +37,10 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
 
     @Override
     public void update(T entity) throws Exception {
-        update(entity, null);
+        update(entity, "id", null);
     }
 
-    private void update(T entity, Object[] ignores) throws Exception {
+    private void update(T entity, String primaryKey, Object[] ignores) throws Exception {
         Map<String, Object> map = parse(entity);
         Object primaryValue = map.get(primaryKey);
         map.remove(primaryKey);
@@ -75,14 +74,16 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
     }
 
     @Override
-    public List<T> list() {
-        return null;
+    public List<T> list(Map<String, Object> para) throws Exception {
+        Query query = new Query();
+        Criteria criteria = null;
+        for (String key : para.keySet()) {
+            criteria = generateFilter(key, para.get(key), criteria);
+        }
+        query.addCriteria(criteria);
+        return mongoTemplate.find(query, getGenericClass());
     }
 
-    @Override
-    public List<T> section(Map<String, Object> para) {
-        return null;
-    }
 
     @Override
     public int count(Map<String, Object> para) {
@@ -100,19 +101,31 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
         command.put("$eval", query);
         Document data = mongoTemplate.getDb().runCommand(command);
 
-        data = (Document) data.get("retval");
-        List<Document> list = (List<Document>) data.get("_batch");
-        List<Map> resultList = new ArrayList<>();
+        List<Map> ret = new ArrayList<>();
 
-        for (Document doc : list) {
-            Map map = new HashMap();
-            for (String key : doc.keySet()) {
-                map.put(key, doc.get(key));
+        Object retval = data.get("retval");
+
+        if (retval instanceof Document) {
+            data = (Document) retval;
+            List dataList = (ArrayList) data.get("_batch");
+
+            for (Object obj : dataList) {
+                Document doc = ((Document) obj);
+                Map map = new HashMap(doc.size());
+                for (String key : doc.keySet()) {
+                    map.put(key, doc.get(key));
+                }
+                ret.add(map);
             }
-            resultList.add(map);
+        } else {
+            Map map = new HashMap(1) {{
+                put("retval", retval.toString());
+            }};
+            ret.add(map);
         }
 
-        return resultList;
+
+        return ret;
     }
 
     private Map<String, Object> parse(T entity) throws Exception {
@@ -130,14 +143,57 @@ public abstract class BaseDaoMongoImpl<T> implements BaseDao<T> {
         return ret;
     }
 
+    private Criteria generateFilter(String keyStr, Object value, Criteria criteria) throws Exception {
+        String seperator = ":";
+        String methodName = null, key = null;
 
-//      低版本使用下面方法
-//    public Map rawQuery(String query){
-//        CommandResult data= mongoTemplate.getDb().doEval(query);
-//        Map result=new HashMap();
-//        for(String key :  data.keySet()){
-//            result.put(key,data.get(key));
-//        }
-//        return data;
-//    }
+        if (keyStr.indexOf(seperator) > -1) {
+            String[] arr = keyStr.split(":");
+            methodName = arr[0];
+            key = arr[1];
+        } else {
+            key = keyStr;
+        }
+        Map<String, String> nickNames = new HashMap(2) {
+            {
+                put("lk", "regex");
+                put(null, "is");
+            }
+        };
+
+        //别名
+        if (nickNames.containsKey(methodName)) {
+            methodName = nickNames.get(methodName);
+        }
+        if (criteria == null) {
+            criteria = Criteria.where(key);
+        } else {
+            criteria.and(key);
+        }
+        if (methodName.equals("regex")) {
+            criteria.regex(value.toString());
+        } else {
+            Method method = Criteria.class.getDeclaredMethod(methodName, Object.class);
+            method.invoke(criteria, value);
+        }
+
+        return criteria;
+    }
+
+
+    private void separateMap(Map<String, Object> map, List<String> keys, List<Object> values) {
+        if (keys == null) {
+            keys = new ArrayList<>(map.size());
+        }
+        if (values == null) {
+            values = new ArrayList<>(map.size());
+        }
+
+        for (String key : map.keySet()) {
+            keys.add(key);
+            values.add(map.get(key));
+
+        }
+
+    }
 }

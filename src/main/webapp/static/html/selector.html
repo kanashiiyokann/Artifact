@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>selector</title>
+</head>
+<body>
+
+<div id="test">
+    <span name="test"></span>
+</div>
+</body>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+$.fn.test=function(){
+
+    console.log(this);
+}
+$("[name='test']").test();
+
+</script>
+</html>

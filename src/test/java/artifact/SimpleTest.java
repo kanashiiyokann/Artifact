@@ -6,16 +6,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class SimpleTest {
+
     @Resource
     private UserServiceImpl userService;
     @Resource
@@ -37,11 +41,21 @@ public class SimpleTest {
 
 
     @Test
-    public void mongoRawQueryTest(){
+    public void mongoQueryTest() throws Exception{
 
-        String query="db.getCollection(\"User\").aggregate([ { \"$group\" : { \"_id\" :  null  , \"abnormal\" : { \"$sum\" : { \"$cond\" : { \"if\" : { \"$in\" : [ \"$state\",[ 2 , 3] ]} , \"then\" : 1 , \"else\" : 0}}} , \"total\" : { \"$sum\" : 1}}}]);";
-        List<Map> result = userService.rawQuery(query);
-        System.out.println(result.toString());
+        Map para=new HashMap(1){{
+            put("age",18);
+            put("state",2);
+        }};
+
+        Query query=new Query();
+        Criteria criteria=new Criteria();
+        criteria.and("age").is(18).and("state").is(2);
+        query.addCriteria(criteria);
+        query.limit(10);
+     List<User> users=   mongoTemplate.find(query,User.class);
+
+
 
     }
 
