@@ -1,6 +1,6 @@
 package artifact.modules.user.constant;
 
-import artifact.common.annotation.Text;
+import artifact.modules.common.annotation.Text;
 
 public interface UserState {
 

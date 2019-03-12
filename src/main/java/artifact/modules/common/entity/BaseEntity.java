@@ -1,4 +1,4 @@
-package artifact.common.entity;
+package artifact.modules.common.entity;
 
 import java.util.Date;
 

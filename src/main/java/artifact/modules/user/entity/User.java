@@ -1,6 +1,6 @@
 package artifact.modules.user.entity;
 
-import artifact.common.entity.BaseEntity;
+import artifact.modules.common.entity.BaseEntity;
 import artifact.modules.user.constant.UserState;
 import org.springframework.data.mongodb.core.mapping.Document;
 

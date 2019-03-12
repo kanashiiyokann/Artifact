@@ -1,8 +1,8 @@
-package artifact.common.util;
+package artifact.modules.common.util;
 
 
 
-import artifact.common.annotation.Text;
+import artifact.modules.common.annotation.Text;
 import artifact.modules.user.constant.UserState;
 
 import java.lang.reflect.Field;
