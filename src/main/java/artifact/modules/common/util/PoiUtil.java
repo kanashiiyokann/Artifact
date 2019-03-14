@@ -56,7 +56,7 @@ public class PoiUtil {
 
     }
     public void nextRow(){
-        currentRow=currentSheet.createRow()
+        currentRow=currentSheet.createRow(++rowIndex);
     }
 
     public void AddCell(Object value,Integer colspan,Integer rowspan,Style style){}
