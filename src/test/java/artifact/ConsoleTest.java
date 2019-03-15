@@ -1,7 +1,7 @@
 package artifact;
 
 
-import artifact.modules.common.util.PoiUtil;
+import artifact.modules.common.util.ExcelUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,19 +9,24 @@ import java.util.regex.Pattern;
 
 public class ConsoleTest {
 
-  private static  Pattern p=Pattern.compile("\\S+");
+    private static Pattern p = Pattern.compile("\\S+");
 
-    public static void main(String[] args)throws Exception  {
+    public static void main(String[] args) throws Exception {
 
         test();
     }
 
 
     public static void test() throws Exception {
-        String path="C:\\Users\\DGG-S27-D-20\\Documents\\text1.xls";
+        String path = "C:\\Users\\yayi\\Desktop\\text1.xls";
 
-        PoiUtil poiUtil=new PoiUtil();
-        poiUtil.test1(path);
+        ExcelUtil excelUtil = new ExcelUtil();
+
+        excelUtil.prepare()
+                .nextSheet()
+                .nextRow()
+                .nextCell("your", "mother", "will", "die", "this", "afternoon")
+                .fetch(path);
 
     }
 
@@ -29,18 +34,16 @@ public class ConsoleTest {
     public static void test1() {
 
 
-        String str="id desc nullLast";
+        String str = "id desc nullLast";
 
-        Matcher matcher=p.matcher(str);
-        while(matcher.find()){
+        Matcher matcher = p.matcher(str);
+        while (matcher.find()) {
 
-          System.out.println(matcher.group(0));
+            System.out.println(matcher.group(0));
         }
 
 
     }
-
-
 
 
 }
