@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>test</title>
+</head>
+<body>
+
+</body>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+    function Table(options) {
+
+        let host = "http://localhost:8089";
+        let defaults = {
+            summaryUrl: host + "/api/account/voucherSummary/v1/getSummaryList.do",
+            subjectUrl: host + "/api/account/voucherSummary/v1/getSubject.do",
+            callback: function (data) {
+                console.log("no callback appoint !");
+                console.log(data);
+            }
+        };
+        $.extend(defaults, options);
+        let $this = $(this);
+        $this.dataStore = {};
+        $this.subjectState = 0;
+        $this.summaryState = 0;
+        $this.on("dataLoaded", function () {
+            if ($this.subjectState === 1 && $this.summaryState === 1) {
+
+                //
+
+
+                defaults.callback(subjects);
+                //重置状态
+                $this.summaryState = 0;
+
+            }
+
+        });
+
+
+
+
+        this.getVoucherSummary = function (para) {
+            let subjects, summaries;
+
+            //参数处理
+            let para_subject = {
+                levelStart: 0,
+                levelEnd: 99
+            };
+            $.extend(para_subject, para);
+            $this.levelStart = para_subject.levelStart;
+            $this.levelEnd = para_subject.levelEnd;
+
+            delete    para.levelStart , para.levelEnd;
+            //获取展示层级的科目
+            let para_summary = {
+                TOKEN: 1,
+                word: null,
+                periodStart: null,
+                periodEnd: null,
+                wordSortStart: null,
+                wordSortEnd: null,
+                voucherDateStart: null,
+                voucherDateEnd: null
+            }
+            $.extend(para_summary, para);
+
+            loadSubject();
+            loadSummary(para_summary)
+
+
+        };
+
+        /**
+         * 加载科目数据
+         * */
+        function loadSubject() {
+
+            if ($this.subjectState === 1) return;
+            if ($this.dataStore["subject"] === undefined) {
+
+                $.ajax({
+                    url: defaults.subjectUrl,
+                    type: "post",
+                    data: {TOKEN: 1},
+                    success: function (res) {
+                        let data = res.data || null;
+                        $this.dataStore["subject"] = data;
+                        $this.subjectState = 1;
+                        $this.trigger("dataLoaded");
+                    },
+                    error: function () {
+                        //todo
+                    }
+                });
+            }
+        }
+
+        /**
+         * 加载分录
+         * */
+        function loadSummary(para) {
+            para = trimParameter(para);
+            $.ajax({
+                url: defaults.summaryUrl,
+                type: "post",
+                data: para,
+                success: function (res) {
+                    let data = res.data || null;
+                    $this.dataStore["summary"] = data;
+                    $this.summaryState = 1;
+                    $this.trigger("dataLoaded");
+                },
+                error: function () {
+                    //todo
+                }
+            });
+        }
+
+        /**
+         * 获取对应层级的科目列表
+         * @param para
+         * @returns {Array}
+         */
+        function getSubject(start, end) {
+            let subjects = $this.dataStore["subject"];
+            let ret = [], level;
+            for (let subject of subjects) {
+                level = parseInt(subject.level);
+                if (level >= start && level <= end) {
+                    subject.debitAmount = 0;
+                    subject.creditAmount = 0;
+                    ret.push(subject);
+                }
+            }
+            return ret;
+        }
+
+
+    }
+
+    /**
+     * 清除对象中为null,或显示undefined的字段
+     */
+    function trimParameter(para) {
+        let keys = [];
+        for (let key in para) {
+            if (para[key] === null || para[key] === undefined) {
+                keys.push(key);
+            }
+        }
+        for (let key of keys) {
+            delete para[key];
+        }
+        return para;
+    };
+
+
+
+    function DataManager(callback){
+
+        let subject=null,summary=null;
+        this.addEventListener("dataGot",function(){
+            if(subject!=null && summary!=null && typeof callback==="function"){
+
+                let subjectCode, code, subjects = getSubject(1, 1);
+                for (let subject  of subjects) {
+                    subjectCode = subject.code;
+                    let summaries=  $this.dataStore["summary"];
+                    for (let summary of summaries) {
+                        code = summary.subjectCode;
+                        if (subjectCode.toString().startsWith(code)) {
+                            subject.creditAmount += summary.creditAmount;
+                            subject.debitAmount += summary.debitAmount;
+                        }
+                    }
+                }
+
+                callback(data);
+            }
+
+        })
+
+
+        this.setSubject=function(data){
+                subject=data;
+                this.dispatchEvent()
+        }
+        this.setSummary=function(data){
+
+        }
+
+    }
+
+
+</script>
+<script type="text/javascript">
+    let table = new Table();
+    table.getVoucherSummary({});
+
+</script>
+</html>
