@@ -231,7 +231,7 @@
          * @param listener 事件回调
          * @param targets [string...] 字符数组
          */
-        this.addListener = function (listener, targets) {
+        this.addListener = function (targets, listener) {
             if (typeof listener !== "function") {
                 console.log("listener should be a function !")
                 return;
@@ -253,9 +253,40 @@
 </script>
 <script type="text/javascript">
     let manager = new DataManager();
-    manager.addListener(function (datas) {
-        console.log(datas);
-    }, ["data1", "data2"]);
-    manager.setData("data2", "your mother must die this afternoon ");
+    manager.addListener(["subject", "summary"], function (datas) {
+        let subject = datas["subject"], summary = datas["summary"];
+
+        let filter = {start: 1, end: 1};
+        //获取对应层级
+        let level, ret = [];
+        for (let sub of subject) {
+            level = parseInt(sub["level"]);
+            if (level < filter.start || level > filter.end) continue;
+            ret.push(sub);
+        }
+        //累加聚合数据
+        let subjectCode, code, retVal = [], flag;
+        for (let sub  of ret) {
+            subjectCode = sub["code"].toString();
+            flag = false;
+            for (let sum of summary) {
+                code = sum["subjectCode"];
+                if (subjectCode.startsWith(code)) {
+                    subject.creditAmount += summary.creditAmount;
+                    subject.debitAmount += summary.debitAmount;
+                    flag = true;
+                }
+            }
+            //剔除发生额全为0的数据
+            if (flag) {
+                retVal.push(sub)
+            }
+        }
+
+        console.log(retVal);
+
+
+    });
+
 </script>
 </html>
