@@ -1,17 +1,12 @@
 package artifact.modules.common.util;
 
-import org.apache.poi.hssf.record.PaletteRecord;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFPalette;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
 
 public class ExcelUtil {
 
@@ -127,7 +122,7 @@ public class ExcelUtil {
         HSSFPalette palette = wb.getCustomPalette();
         palette.setColorAtIndex(colorIndex, (byte) red, (byte) green, (byte) blue);
         Short ret = colorIndex;
-        colIndex++;
+        this.colorIndex = (short) (this.colorIndex + 1);
         return ret;
     }
 
@@ -154,48 +149,49 @@ public class ExcelUtil {
         fileOutputStream.close();
     }
 
-//    private CellStyle getStyle(Style style) {
-//
-//        CellStyle cs = wb.createCellStyle();
-//        cs.setAlignment(style.getHorizontalAlign());
-//        cs.setVerticalAlignment(style.getVerticalAlign());
-//        cs.setFillBackgroundColor();
-//        return cs;
-//    }
+    private CellStyle getStyle(Style style) {
 
-//
-//    class Style implements StyleConstant {
-//        private VerticalAlignment verticalAlign = VERTICAL_BOTTOM;
-//        private HorizontalAlignment horizontalAlign = HORIZONTAL_LEFT;
-//        private Object BorderColor;
-//        private Object Color;
-//        private Object BackgroudColor;
-//
-//
-//        public VerticalAlignment getVerticalAlign() {
-//            return verticalAlign;
-//        }
-//
-//        public void setVerticalAlign(VerticalAlignment verticalAlign) {
-//            this.verticalAlign = verticalAlign;
-//        }
-//
-//        public HorizontalAlignment getHorizontalAlign() {
-//            return horizontalAlign;
-//        }
-//
-//        public void setHorizontalAlign(HorizontalAlignment horizontalAlign) {
-//            this.horizontalAlign = horizontalAlign;
-//        }
-//    }
-//
-//
-//    interface StyleConstant {
-//        VerticalAlignment VERTICAL_CENTER = VerticalAlignment.CENTER;
-//        VerticalAlignment VERTICAL_TOP = VerticalAlignment.TOP;
-//        VerticalAlignment VERTICAL_BOTTOM = VerticalAlignment.BOTTOM;
-//        HorizontalAlignment HORIZONTAL_RIGHT = HorizontalAlignment.RIGHT;
-//        HorizontalAlignment HORIZONTAL_LEFT = HorizontalAlignment.LEFT;
-//        HorizontalAlignment HORIZONTAL_CENTER = HorizontalAlignment.CENTER;
-//    }
+        CellStyle cs = wb.createCellStyle();
+        cs.setAlignment(style.getHorizontalAlign());
+        cs.setVerticalAlignment(style.getVerticalAlign());
+        cs.setFillBackgroundColor();
+        return cs;
+    }
+
+
+    class Style implements StyleConstant {
+        private VerticalAlignment verticalAlign = VERTICAL_BOTTOM;
+        private HorizontalAlignment horizontalAlign = HORIZONTAL_LEFT;
+        private Object BorderColor;
+        private Object Color;
+        private Object BackgroudColor;
+        private CellStyle cellStyle;
+
+
+        public VerticalAlignment getVerticalAlign() {
+            return verticalAlign;
+        }
+
+        public void setVerticalAlign(VerticalAlignment verticalAlign) {
+            this.verticalAlign = verticalAlign;
+        }
+
+        public HorizontalAlignment getHorizontalAlign() {
+            return horizontalAlign;
+        }
+
+        public void setHorizontalAlign(HorizontalAlignment horizontalAlign) {
+            this.horizontalAlign = horizontalAlign;
+        }
+    }
+
+
+    interface StyleConstant {
+        VerticalAlignment VERTICAL_CENTER = VerticalAlignment.CENTER;
+        VerticalAlignment VERTICAL_TOP = VerticalAlignment.TOP;
+        VerticalAlignment VERTICAL_BOTTOM = VerticalAlignment.BOTTOM;
+        HorizontalAlignment HORIZONTAL_RIGHT = HorizontalAlignment.RIGHT;
+        HorizontalAlignment HORIZONTAL_LEFT = HorizontalAlignment.LEFT;
+        HorizontalAlignment HORIZONTAL_CENTER = HorizontalAlignment.CENTER;
+    }
 }
