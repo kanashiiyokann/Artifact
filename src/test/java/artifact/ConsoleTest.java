@@ -2,10 +2,7 @@ package artifact;
 
 
 import artifact.modules.common.util.ExcelUtil;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import artifact.modules.common.util.ExcelUtil.Style;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,45 +23,30 @@ public class ConsoleTest {
 
         ExcelUtil excelUtil = new ExcelUtil();
 
-        CellStyle style_center = excelUtil.createStyle();
-        style_center.setAlignment(HorizontalAlignment.CENTER);
+        Style style_center = excelUtil.createStyle();
+        style_center.setHorizontalAlign(Style.ALIGNMENT_CENTER);
 
-        CellStyle style_right = excelUtil.createStyle();
-        style_right.setAlignment(HorizontalAlignment.RIGHT);
+        Style style_right = excelUtil.createStyle();
+        style_right.setHorizontalAlign(Style.ALIGNMENT_RIGHT);
 
-        CellStyle style_header = excelUtil.createStyle();
-        Short color_ashy = excelUtil.getColor(192, 192, 192);
-        Short color_black = excelUtil.getColor(0, 0, 0);
-
-        style_header.setAlignment(HorizontalAlignment.CENTER);
-        style_header.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style_header.setFillForegroundColor(color_ashy);
-        style_header.setBorderBottom(BorderStyle.THIN);
-        style_header.setBorderTop(BorderStyle.THIN);
-        style_header.setBorderRight(BorderStyle.THIN);
-        style_header.setBorderLeft(BorderStyle.THIN);
-
-        style_header.setBottomBorderColor(color_black);
-        style_header.setTopBorderColor(color_black);
-        style_header.setLeftBorderColor(color_black);
-        style_header.setRightBorderColor(color_black);
+        Style style_header = excelUtil.createStyle();
 
 
-        CellStyle style = excelUtil.createStyle();
-        style.setBorderBottom(BorderStyle.THIN);
-        style.setBorderTop(BorderStyle.THIN);
-        style.setBorderRight(BorderStyle.THIN);
-        style.setBorderLeft(BorderStyle.THIN);
-        style.setBottomBorderColor(color_black);
-        style.setTopBorderColor(color_black);
-        style.setLeftBorderColor(color_black);
-        style.setRightBorderColor(color_black);
+        style_header.setHorizontalAlign(Style.ALIGNMENT_CENTER);
+        style_header.setBackgroundColor(192, 192, 192);
+        style_header.setBorder(Style.BORDER_THIN);
+        style_header.setBorderColor(0, 0, 0);
+
+
+        Style style = excelUtil.createStyle();
+        style.setBorder(Style.BORDER_THIN);
+        style.setBorderColor(0, 0, 0);
 
 
         excelUtil.nextSheet(16, 16, 16, 16).nextRow()
-                .nextCell("凭证汇总表", 4, 1, style_center).nextRow()
-                .nextCell("凭证总张数：12张  附件总张数：11张", 4, 1, style_right).nextRow()
-                .nextCell("1102测试账套", 2, 1).nextCell("2018-06-01 至 2018-06-30", 2, 1, style_right).nextRow()
+                .setStyle(style_center).nextCell("凭证汇总表", 4, 1).nextRow()
+                .setStyle(style_right).nextCell("凭证总张数：12张  附件总张数：11张", 4, 1).nextRow()
+                .setStyle(style_right).nextCell("1102测试账套", 2, 1).nextCell("2018-06-01 至 2018-06-30", 2, 1).nextRow()
                 .setStyle(style_header).nextCell("科目编码", "科目名称", "借方余额", "贷方余额").nextRow()
                 .setStyle(style).nextCell("1001", "kemumingcheng", "1111", "22222")
                 .fetch(path);
