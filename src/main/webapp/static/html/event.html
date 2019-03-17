@@ -40,8 +40,6 @@
         });
 
 
-
-
         this.getVoucherSummary = function (para) {
             let subjects, summaries;
 
@@ -159,47 +157,105 @@
     };
 
 
+    function DataManager() {
+        let $datas = {}, $events = [], $args = {};
+        // let subject = null, summary = null;
+        // this.addEventListener("dataGot", function () {
+        //     if (subject != null && summary != null && typeof callback === "function") {
+        //
+        //         let subjectCode, code, subjects = getSubject(1, 1);
+        //         for (let subject  of subjects) {
+        //             subjectCode = subject.code;
+        //             let summaries = $this.dataStore["summary"];
+        //             for (let summary of summaries) {
+        //                 code = summary.subjectCode;
+        //                 if (subjectCode.toString().startsWith(code)) {
+        //                     subject.creditAmount += summary.creditAmount;
+        //                     subject.debitAmount += summary.debitAmount;
+        //                 }
+        //             }
+        //         }
+        //
+        //         callback(data);
+        //     }
+        //
+        // })
 
-    function DataManager(callback){
+        function check(tartget) {
+            let targets, para, arg, once;
+            for (let key in $events) {
 
-        let subject=null,summary=null;
-        this.addEventListener("dataGot",function(){
-            if(subject!=null && summary!=null && typeof callback==="function"){
+                if (key.indexOf(tartget) > -1) {
+                    targets = key.split(",");
+                    //检查所需数据是否齐全
+                    para = {};
+                    for (let t of targets) {
+                        arg = $datas[t];
+                        if (arg === undefined) return;
+                        para[t] = arg;
+                    }
 
-                let subjectCode, code, subjects = getSubject(1, 1);
-                for (let subject  of subjects) {
-                    subjectCode = subject.code;
-                    let summaries=  $this.dataStore["summary"];
-                    for (let summary of summaries) {
-                        code = summary.subjectCode;
-                        if (subjectCode.toString().startsWith(code)) {
-                            subject.creditAmount += summary.creditAmount;
-                            subject.debitAmount += summary.debitAmount;
+                    //执行回调
+                    let eventSet = $events[key];
+                    for (let event of eventSet) {
+                        event(para);
+
+                    }
+
+                    //检查是否重置数据
+                    for (let t of targets) {
+                        once = $args[t];
+                        if (once === true) {
+                            delete  $datas[t];
                         }
                     }
+
                 }
-
-                callback(data);
             }
-
-        })
-
-
-        this.setSubject=function(data){
-                subject=data;
-                this.dispatchEvent()
         }
-        this.setSummary=function(data){
 
-        }
+        /***
+         *
+         * @param tagert 数据标记
+         * @param data 数据
+         * @param once 默认false，是否是一次性的、在指定方法调用后是否重置
+         */
+        this.setData = function (tagert, data, once) {
+            $datas[tagert] = data;
+            once = once || false;
+            $args[tagert] = once;
+            check(tagert);
+        };
+        /**
+         *添加事件监听
+         * @param listener 事件回调
+         * @param targets [string...] 字符数组
+         */
+        this.addListener = function (listener, targets) {
+            if (typeof listener !== "function") {
+                console.log("listener should be a function !")
+                return;
+            }
+            if (Array.isArray(targets) && targets.length < 1) {
+                console.log("targets should be a Array ,and length greater than zero !")
+                return;
+            }
+            let key = targets.join(",");
+            let eventSet = $events[key] || new Set();
+            eventSet.add(listener);
+            $events[key] = eventSet;
+
+        };
 
     }
 
 
 </script>
 <script type="text/javascript">
-    let table = new Table();
-    table.getVoucherSummary({});
-
+    let manager = new DataManager();
+    manager.addListener(function (datas) {
+        console.log(datas);
+    }, ["data1", "data2"]);
+    manager.setData("data2", "your mother must die this afternoon ");
 </script>
 </html>
