@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <title>test</title>
+</head>
+<body>
+
+</body>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+
+    function DataManager(callback) {
+
+        let defaults={
+            callback:function(subject,summary){
+                    console.log("accept all data !");
+                    console.log(subject, summary);
+            }
+        };
+        if(typeof callback==="function"){
+            defaults.callback=callback;
+        }
+
+        let subject = null, summary = null;
+        let $instance=this;
+        $instance.accept=function() {
+            if(subject!==null && summary!==null){
+                defaults.callback(subject,summary);
+            }
+        };
+
+        this.setSubject = function (data) {
+            subject = data;
+            $instance.accept(data);
+        };
+        this.setSummary = function (data) {
+            summary = data;
+            $instance.accept(data);
+        };
+
+    }
+
+</script>
+</html>
