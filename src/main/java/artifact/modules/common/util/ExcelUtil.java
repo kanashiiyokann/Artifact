@@ -7,7 +7,9 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ExcelUtil {
@@ -20,6 +22,20 @@ public class ExcelUtil {
     private Short colorIndex = 8;
     private Style style;
     private Map<String, Short> colorPalette = new HashMap<>();
+    private List<Position> seizeList = new ArrayList<>();
+
+
+    private Position nextPosition() {
+        Position p = new Position(rowIndex, ++colIndex);
+
+        while (seizeList.contains(p)) {
+            seizeList.remove(p);
+            p = new Position(rowIndex, ++colIndex);
+        }
+
+        return p;
+    }
+
 
     public ExcelUtil() {
         wb = new HSSFWorkbook();
@@ -59,7 +75,8 @@ public class ExcelUtil {
 
     public ExcelUtil nextCell(Object value, Integer colspan, Integer rowspan, Style style) throws RuntimeException {
 
-        Cell cell = currentRow.createCell(++colIndex);
+        Position p=this.nextPosition();
+        Cell cell = currentRow.createCell(p.column);
         cell.setCellValue(String.valueOf(value));
         style = style == null ? this.style : style;
         if (style != null) {
@@ -79,8 +96,13 @@ public class ExcelUtil {
             if (colspan != 0 || rowspan != 0) {
                 CellRangeAddress region = new CellRangeAddress(rowIndex, rowIndex + rowspan, colIndex, colIndex + colspan);
                 currentSheet.addMergedRegion(region);
-                rowIndex += rowspan;
-                colIndex += colspan;
+
+                //添加占位
+                for (int i = 0; i <= colspan; i++) {
+                    for (int j = 0; j <= rowspan; j++) {
+                     if(i!=0 || j!=0)  { seizeList.add(new Position(rowIndex + j, colIndex + i));}
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,15 +116,7 @@ public class ExcelUtil {
 
 
     public ExcelUtil nextCell(String value) {
-
-        Cell cell = currentRow.createCell(++colIndex);
-        if (this.style != null) {
-            cell.setCellStyle(this.style.cellStyle);
-        }
-        if (value != null) {
-            cell.setCellValue(value);
-        }
-
+        nextCell(value, 1, 1, null);
         return this;
     }
 
@@ -236,6 +250,26 @@ public class ExcelUtil {
         }
 
 
+    }
+
+    class Position {
+        private Integer row;
+        private Integer column;
+
+        Position(int row, int column) {
+            this.row = row;
+            this.column = column;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            boolean flag = false;
+            if (obj instanceof Position) {
+                Position p = (Position) obj;
+                flag = this.row.equals(p.row) && this.column.equals(p.column);
+            }
+            return flag;
+        }
     }
 
     public interface StyleConstant {

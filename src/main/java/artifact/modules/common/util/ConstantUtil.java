@@ -35,7 +35,7 @@ public class ConstantUtil {
         LinkedHashMap<String,String> map=getMap(clazz);
 
         for(String key :map.keySet()){
-            Map<String,String> ky=new HashMap(){{
+            Map<String,String> ky=new HashMap(1){{
                 put(key,map.get(key));
             }};
             list.add(ky);

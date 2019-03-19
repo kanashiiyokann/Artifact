@@ -19,7 +19,21 @@ public class ConsoleTest {
 
 
     public static void test() throws Exception {
-        String path = "C:\\Users\\yayi\\Desktop\\text1.xls";
+        String path = "C:\\Users\\DGG-S27-D-20\\Desktop\\text1.xls";
+
+        ExcelUtil excelUtil = new ExcelUtil();
+
+
+        excelUtil.nextSheet(16, 16, 16, 16).nextRow()
+                .nextCell("凭证汇总表", 1, 3).nextRow()
+                .nextCell("凭证总张数",2,2).nextRow()
+                .nextCell("1102测试账套", 2, 1).nextCell("2018-06-01 至 2018-06-30", 2, 1).nextRow()
+                .fetch(path);
+
+    }
+
+    public static void test2() throws Exception {
+        String path = "C:\\Users\\DGG-S27-D-20\\Desktop\\text1.xls";
 
         ExcelUtil excelUtil = new ExcelUtil();
 
