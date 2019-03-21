@@ -1,9 +1,13 @@
 package artifact;
 
 
+import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +21,42 @@ public class ConsoleTest {
         test();
     }
 
-
     public static void test() throws Exception {
+
+        Excel2PdfUtil util = new Excel2PdfUtil();
+        String path = "src/main/resources/20190312184124凭证汇总表.xls";
+        util.load(path);
+        path = "C:\\Users\\DGG-S27-D-20\\Desktop\\凭证汇总表.pdf";
+        util.fetch(path);
+
+    }
+
+    public static String test5(int year, int month) throws Exception {
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        month--;
+        calendar.set(year, month, 1, 0, 0, 0);
+        calendar.add(Calendar.MONTH, 1);
+        calendar.add(Calendar.SECOND, -1);
+
+        Date date = calendar.getTime();
+
+        return sdf.format(date);
+
+    }
+
+    public static void test4() throws Exception {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+        Date date = sdf.parse("2019-03-18 00:00:00");
+        Long localtime = date.getTime();
+        if (localtime.equals(1552838400000L)) {
+            System.out.println("true");
+        }
+    }
+
+    public static void test3() throws Exception {
         String path = "C:\\Users\\DGG-S27-D-20\\Desktop\\text1.xls";
 
         ExcelUtil excelUtil = new ExcelUtil();
@@ -26,7 +64,7 @@ public class ConsoleTest {
 
         excelUtil.nextSheet(16, 16, 16, 16).nextRow()
                 .nextCell("凭证汇总表", 1, 3).nextRow()
-                .nextCell("凭证总张数",2,2).nextRow()
+                .nextCell("凭证总张数", 2, 2).nextRow()
                 .nextCell("1102测试账套", 2, 1).nextCell("2018-06-01 至 2018-06-30", 2, 1).nextRow()
                 .fetch(path);
 
