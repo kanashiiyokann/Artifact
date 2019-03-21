@@ -32,7 +32,7 @@ public class Excel2PdfUtil {
             throw new RuntimeException(e.getMessage());
         }
 
-        document = new Document(PageSize.A1);
+        document = new Document(PageSize.A4);
     }
 
     public void load(HSSFWorkbook wb) {
@@ -63,7 +63,7 @@ public class Excel2PdfUtil {
             throw new RuntimeException("sheet should not be null !");
         }
         int tableColNum = getMaxColumnNumber(sheet);
-        PdfPTable table = new PdfPTable(tableColNum);
+        PdfPTable table = new PdfPTable(tableColNum + 1);
 
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
             HSSFRow row = sheet.getRow(i);
@@ -75,9 +75,23 @@ public class Excel2PdfUtil {
                     table.addCell(handleCell(cell));
                 }
             }
+            table.addCell(getDefaultCell());
             table.completeRow();
+
+        }
+        //列宽
+        float[] widths = new float[tableColNum + 1];
+        for (int i = 0; i < tableColNum; i++) {
+            widths[i] = sheet.getColumnWidth(i);
+        }
+        widths[tableColNum] = 0.01f;
+        try {
+            table.setWidths(widths);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        //单元格合并
         List<CellRangeAddress> mergedList = sheet.getMergedRegions();
 
         for (CellRangeAddress merged : mergedList) {
@@ -109,7 +123,6 @@ public class Excel2PdfUtil {
         return ret;
 
     }
-
 
 
     private void handleStyle(HSSFCell cell, PdfPCell tcell) {
