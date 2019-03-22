@@ -19,7 +19,7 @@ public class ConsoleTest {
 
     public static void main(String[] args) throws Exception {
 
-        test();
+        test6();
     }
 
     public static void test() throws Exception {
