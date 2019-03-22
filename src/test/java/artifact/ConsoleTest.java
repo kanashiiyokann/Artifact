@@ -5,6 +5,7 @@ import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +24,13 @@ public class ConsoleTest {
 
     public static void test() throws Exception {
 
+        URI uri=new URI("https://www.baidu.com/img/bd_logo1.png");
+        System.out.println(uri.getPath());
+
+
+    }
+    public static void test6() throws Exception {
+
         Excel2PdfUtil util = new Excel2PdfUtil();
         String path = "src/main/resources/20190312184124凭证汇总表.xls";
         util.load(path);
@@ -30,7 +38,6 @@ public class ConsoleTest {
         util.fetch(path);
 
     }
-
     public static String test5(int year, int month) throws Exception {
 
         Calendar calendar = Calendar.getInstance();
