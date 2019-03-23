@@ -9,7 +9,6 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -23,20 +22,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Repository
-public abstract class MongoDaoImpl<T> implements MongoDao<T> {
+public abstract class MongoDaoImpl<T> {
 
     private Pattern pattern = Pattern.compile("\\S+");
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    @Override
     public void save(T entity) {
         mongoTemplate.save(entity);
     }
 
-
-    @Override
 
     public Long update(T entity) {
         String primary = "id";
@@ -68,7 +63,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @param update
      * @author zyw
      */
-    @Override
     public Long update(Map<String, Object> query, Map<String, Object> update) {
 
         Update udt = new Update();
@@ -92,7 +86,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @throws Exception
      * @author zyw
      */
-    @Override
     public List<T> list(Map<String, Object> para, Integer index, Integer size, String order) {
 
         //过滤
@@ -123,7 +116,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @param para
      * @return
      */
-    @Override
     public Long count(Map<String, Object> para) {
         Query query = generateQuery(para);
 
@@ -136,7 +128,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      *
      * @return
      */
-    @Override
     public List<T> list(Map<String, Object> para, String sort) {
 
         Query query = generateQuery(para);
@@ -155,7 +146,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @return
      * @throws Exception
      */
-    @Override
     public List<Map> excuteQuery(String queryTemplate, Object... args) {
         if (args != null && args.length > 0) {
             queryTemplate = String.format(queryTemplate, args);
@@ -187,7 +177,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @param para
      * @throws Exception
      */
-    @Override
     public Long delete(Map<String, Object> para) {
         Query query = generateQuery(para);
 
@@ -201,7 +190,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      *
      * @param ids 实体ID或数组
      */
-    @Override
     public Long delete(Long... ids) {
         Map para = new HashMap(1);
         para.put("id$in", ids);
@@ -214,7 +202,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      *
      * @param id 实体的主键ID
      */
-    @Override
     public T find(Long id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(id));
@@ -231,7 +218,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
      * @param ids
      * @return
      */
-    @Override
     public List<T> find(Long... ids) throws Exception {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").in(ids));
@@ -353,7 +339,6 @@ public abstract class MongoDaoImpl<T> implements MongoDao<T> {
         return (Class<T>) type;
     }
 
-    @Override
     public List<Map> aggregate(Map match, Map group, Map aggregate) {
 
         return null;

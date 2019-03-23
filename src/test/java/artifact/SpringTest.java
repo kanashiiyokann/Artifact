@@ -1,18 +1,10 @@
 package artifact;
 
-import java.util.Date;
-
-import artifact.modules.item.entity.Item;
-import artifact.modules.item.service.ItemService;
-import artifact.modules.user.constant.UserState;
-import artifact.modules.user.entity.User;
 import artifact.modules.user.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationOptions;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,9 +14,6 @@ import javax.annotation.Resource;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class SpringTest {
-
-    @Resource
-    private ItemService itemService;
 
     @Resource
     private UserService userService;

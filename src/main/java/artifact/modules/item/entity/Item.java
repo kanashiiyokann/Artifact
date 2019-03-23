@@ -1,24 +1,14 @@
 package artifact.modules.item.entity;
 
 
+import artifact.modules.common.entity.BaseEntity;
 import org.springframework.data.elasticsearch.annotations.Document;
 
 import java.util.Date;
 
-@Document(indexName = "artifact_item",type = "item")
-public class Item {
-    private Long id;
+public class Item extends BaseEntity{
     private String name;
     private String note;
-    private Date createTime;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -36,11 +26,4 @@ public class Item {
         this.note = note;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }
