@@ -1,6 +1,5 @@
 package artifact.modules.common.dao.impl;
 
-import artifact.modules.common.entity.BaseEntity;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -16,7 +15,7 @@ import java.util.*;
  * @param <T>
  * @author DGG-S27-D-20
  */
-public abstract class ElasticSearchDaoImpl<T extends BaseEntity> {
+public abstract class ElasticSearchDaoImpl<T> {
     private String index;
     @Resource
     protected Client client;
@@ -41,6 +40,9 @@ public abstract class ElasticSearchDaoImpl<T extends BaseEntity> {
 
     protected String getType() {
         return getGenericClass().getSimpleName();
+    }
+    protected String getIdentityKey(){
+
     }
 
     /**
