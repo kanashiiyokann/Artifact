@@ -11,13 +11,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class ItemServiceImpl extends ElasticSearchDaoImpl<Item> {
 
-    @Override
-    protected String getIndex() {
-        return "artifact";
-    }
-
-    @Override
-    protected String getType() {
-        return "item";
-    }
 }

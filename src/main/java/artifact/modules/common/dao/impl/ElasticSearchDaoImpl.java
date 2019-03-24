@@ -1,7 +1,10 @@
 package artifact.modules.common.dao.impl;
 
+
+import org.elasticsearch.action.DocWriteResponse.Result;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.client.Client;
 
@@ -16,7 +19,6 @@ import java.util.*;
  * @author DGG-S27-D-20
  */
 public abstract class ElasticSearchDaoImpl<T> {
-    private String index;
     @Resource
     protected Client client;
 
@@ -24,25 +26,59 @@ public abstract class ElasticSearchDaoImpl<T> {
         Map map = parse(entity);
 
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        IndexRequestBuilder indexRequest = client.prepareIndex(getIndex(), getType(), String.valueOf(entity.getId())).setSource(map);
+        Object id = map.get(getIdentityKey());
+        if (id == null) {
+            throw new RuntimeException("the entity should has id field without null ！");
+        }
+        IndexRequestBuilder indexRequest = client.prepareIndex(getIndex(), getType(), String.valueOf(id)).setSource(map);
         bulkRequest.add(indexRequest);
         BulkResponse responses = bulkRequest.execute().actionGet();
-
-        return !responses.hasFailures();
-    }
-
-    protected String getIndex() {
-        if (index == null || index.length() == 0) {
-            index = "default";
+        if (responses.hasFailures()) {
+            throw new RuntimeException(responses.buildFailureMessage());
         }
-        return index;
+        return true;
     }
 
+    public boolean delete(T entity) {
+        Map map = parse(entity);
+        Object id = map.get(getIdentityKey());
+        if (id == null) {
+            throw new RuntimeException("the entity should has id field without null ！");
+        }
+        DeleteResponse response = client.prepareDelete(getIndex(), getType(), String.valueOf(id)).get();
+        if (!Result.DELETED.equals(response.getResult())) {
+            throw new RuntimeException(String.format("elasticsearch delete failed response :%s", response.getResult()));
+        }
+        return true;
+    }
+
+    /**
+     * 获取index
+     *
+     * @return
+     */
+    protected String getIndex() {
+        String name = getGenericClass().getSimpleName();
+        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        return name;
+    }
+
+    /**
+     * 获取type
+     *
+     * @return
+     */
     protected String getType() {
-        return getGenericClass().getSimpleName();
+        return "default";
     }
-    protected String getIdentityKey(){
 
+    /**
+     * 获取主键field
+     *
+     * @return
+     */
+    protected String getIdentityKey() {
+        return "id";
     }
 
     /**

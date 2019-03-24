@@ -2,9 +2,6 @@ package artifact.modules.item.entity;
 
 
 import artifact.modules.common.entity.BaseEntity;
-import org.springframework.data.elasticsearch.annotations.Document;
-
-import java.util.Date;
 
 public class Item extends BaseEntity{
     private String name;

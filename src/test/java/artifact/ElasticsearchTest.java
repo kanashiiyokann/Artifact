@@ -1,6 +1,5 @@
 package artifact;
 
-import artifact.modules.common.dao.impl.ElasticSearchDaoImpl;
 import artifact.modules.item.entity.Item;
 import artifact.modules.item.service.impl.ItemServiceImpl;
 import org.junit.Test;
@@ -22,12 +21,21 @@ public class ElasticsearchTest {
     public void saveTest() {
 
         Item item = new Item();
-        item.setId(3L);
-        item.setName("admin3");
+        item.setId(4L);
+        item.setName("admin");
         item.setNote("es save test again");
         item.setCreateTime(new Date());
 
         itemService.save(item);
+
+    }
+
+    @Test
+    public void deleteTest() {
+
+        Item item = new Item();
+        item.setId(4L);
+        itemService.delete(item);
 
     }
 }
