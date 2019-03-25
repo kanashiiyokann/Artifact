@@ -14,4 +14,11 @@ public class UserServiceImpl extends MongoDaoImpl<User> {
 
         return null;
     }
+
+    public void test(String name, String pwd, Integer age) {
+
+        System.out.println(name);
+        System.out.println(pwd);
+        System.out.println(age);
+    }
 }

@@ -1,6 +1,6 @@
 package artifact;
 
-import artifact.modules.user.service.UserService;
+import artifact.modules.user.service.impl.UserServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 public class SpringTest {
 
     @Resource
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Resource
     private MongoTemplate mongoTemplate;
@@ -42,23 +42,22 @@ public class SpringTest {
 //        userService.save(user);
         Query query;
         Criteria criteria;
-         query = new Query();
+        query = new Query();
 
 
         query = new Query();
-        criteria = Criteria.where("C").is("value").andOperator(new Criteria().orOperator(Criteria.where("A").is("value"),Criteria.where("B").is("value")) );
+        criteria = Criteria.where("C").is("value").andOperator(new Criteria().orOperator(Criteria.where("A").is("value"), Criteria.where("B").is("value")));
         query.addCriteria(criteria);
         System.out.println(query.toString());
 
         query = new Query();
         query.addCriteria(Criteria.where("C").is("value"));
-        criteria = new Criteria().orOperator(Criteria.where("A").is("value"),Criteria.where("B").is("value"));
+        criteria = new Criteria().orOperator(Criteria.where("A").is("value"), Criteria.where("B").is("value"));
         query.addCriteria(criteria);
 
         System.out.println(query.toString());
 
-   //     mongoTemplate.aggregate(Aggregation.match(),User.class);
-
+        //     mongoTemplate.aggregate(Aggregation.match(),User.class);
 
 
     }
