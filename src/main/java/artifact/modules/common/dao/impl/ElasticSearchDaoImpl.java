@@ -1,12 +1,13 @@
 package artifact.modules.common.dao.impl;
 
 
-import org.elasticsearch.action.DocWriteResponse.Result;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.index.IndexRequestBuilder;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilder;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
@@ -22,34 +23,43 @@ public abstract class ElasticSearchDaoImpl<T> {
     @Resource
     protected Client client;
 
-    public boolean save(T entity) {
-        Map map = parse(entity);
+
+    public boolean save(T... entities) {
 
         BulkRequestBuilder bulkRequest = client.prepareBulk();
-        Object id = map.get(getIdentityKey());
-        if (id == null) {
-            throw new RuntimeException("the entity should has id field without null ！");
+        for (T entity : entities) {
+            bulkRequest.add(generateSaveRequest(entity));
         }
-        IndexRequestBuilder indexRequest = client.prepareIndex(getIndex(), getType(), String.valueOf(id)).setSource(map);
-        bulkRequest.add(indexRequest);
         BulkResponse responses = bulkRequest.execute().actionGet();
         if (responses.hasFailures()) {
             throw new RuntimeException(responses.buildFailureMessage());
         }
         return true;
+
     }
 
-    public boolean delete(T entity) {
-        Map map = parse(entity);
-        Object id = map.get(getIdentityKey());
-        if (id == null) {
-            throw new RuntimeException("the entity should has id field without null ！");
+    public boolean delete(T... entities) {
+
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+
+        for (T entity : entities) {
+            bulkRequest.add(generateDeleteRequest(entity));
         }
-        DeleteResponse response = client.prepareDelete(getIndex(), getType(), String.valueOf(id)).get();
-        if (!Result.DELETED.equals(response.getResult())) {
-            throw new RuntimeException(String.format("elasticsearch delete failed response :%s", response.getResult()));
+        BulkResponse response = bulkRequest.get();
+        if (!response.hasFailures()) {
+            throw new RuntimeException(String.format("elasticsearch delete failed response :%s", response.buildFailureMessage()));
         }
         return true;
+    }
+
+    public List<T> search(Map features, String type, String... indices) {
+
+        SearchRequestBuilder searchRequest = client.prepareSearch(type).setSearchType(type);
+        QueryBuilder query = null;
+        searchRequest.setQuery(generateQuery(features));
+
+
+        return null;
     }
 
     /**
@@ -57,8 +67,8 @@ public abstract class ElasticSearchDaoImpl<T> {
      *
      * @return
      */
-    protected String getIndex() {
-        String name = getGenericClass().getSimpleName();
+    protected String getIndex(T entity) {
+        String name = entity.getClass().getSimpleName();
         name = name.substring(0, 1).toLowerCase() + name.substring(1);
         return name;
     }
@@ -68,8 +78,8 @@ public abstract class ElasticSearchDaoImpl<T> {
      *
      * @return
      */
-    protected String getType() {
-        return "default";
+    protected String getType(T entity) {
+        return String.format("index_%s", getIndex(entity));
     }
 
     /**
@@ -112,6 +122,33 @@ public abstract class ElasticSearchDaoImpl<T> {
                 throw new RuntimeException(String.format("entity field:%s reflect failed !", field.getName()));
             }
         }
+        return ret;
+    }
+
+    private QueryBuilder generateQuery(Map para) {
+
+        return null;
+    }
+
+    private IndexRequestBuilder generateSaveRequest(T entity) {
+        Map map = parse(entity);
+        Object id = map.get(getIdentityKey());
+        if (id == null) {
+            throw new RuntimeException("the entity should has id field without null ！");
+        }
+        IndexRequestBuilder ret = client.prepareIndex(getIndex(entity), getType(entity), String.valueOf(id)).setSource(map);
+
+        return ret;
+    }
+
+    private DeleteRequestBuilder generateDeleteRequest(T entity) {
+
+        Map map = parse(entity);
+        Object id = map.get(getIdentityKey());
+        if (id == null) {
+            throw new RuntimeException("the entity should has id field without null ！");
+        }
+        DeleteRequestBuilder ret = client.prepareDelete(getIndex(entity), getType(entity), String.valueOf(id));
         return ret;
     }
 
