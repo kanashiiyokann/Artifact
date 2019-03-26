@@ -9,6 +9,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -21,9 +24,9 @@ public class ElasticsearchTest {
     public void saveTest() {
 
         Item item = new Item();
-        item.setId(4L);
-        item.setName("admin");
-        item.setNote("es save test again");
+        item.setId(5L);
+        item.setName("head-cha-la");
+        item.setNote("this is a lyric");
         item.setCreateTime(new Date());
 
         itemService.save(item);
@@ -36,6 +39,18 @@ public class ElasticsearchTest {
         Item item = new Item();
         item.setId(4L);
         itemService.delete(item);
+
+    }
+
+    @Test
+    public void searchTest() {
+
+        Map features = new HashMap(1) {{
+            put("id$gte", 2L);
+        }};
+
+        List<Item> retList = itemService.search(features, "index_item");
+        System.out.println(retList);
 
     }
 }
