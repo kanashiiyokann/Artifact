@@ -71,7 +71,7 @@ public abstract class ElasticSearchDaoImpl<T> {
 
     public List<T> search(Map features, String... indices) {
 
-        SearchRequestBuilder searchRequest = client.prepareSearch(indices).setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
+        SearchRequestBuilder searchRequest = client.prepareSearch(indices).setSearchType(SearchType.QUERY_THEN_FETCH);
         QueryBuilder query = generateQuery(features);
         searchRequest.setQuery(query);
         searchRequest.setFrom(0).setSize(10000);
