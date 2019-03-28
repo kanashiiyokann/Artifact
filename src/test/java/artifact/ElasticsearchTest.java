@@ -45,7 +45,7 @@ public class ElasticsearchTest {
     @Test
     public void searchTest() {
 
-        Map features = new HashMap(1) {{
+        Map features = new HashMap<String, Object>(1) {{
             put("id$gte", 2L);
         }};
 

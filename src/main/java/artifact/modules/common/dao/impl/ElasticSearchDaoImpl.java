@@ -15,6 +15,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
@@ -69,12 +71,14 @@ public abstract class ElasticSearchDaoImpl<T> {
         return true;
     }
 
-    public List<T> search(Map features, String... indices) {
+    public List<T> search(Map features, String order, String... indices) {
 
         SearchRequestBuilder searchRequest = client.prepareSearch(indices).setSearchType(SearchType.QUERY_THEN_FETCH);
         QueryBuilder query = generateQuery(features);
         searchRequest.setQuery(query);
         searchRequest.setFrom(0).setSize(10000);
+
+        searchRequest.addSort(SortBuilders.fieldSort("name").order(SortOrder.DESC));
 
         SearchResponse response = searchRequest.execute().actionGet();
         SearchHit[] hits = response.getHits().getHits();
@@ -84,6 +88,7 @@ public abstract class ElasticSearchDaoImpl<T> {
         }
         return retList;
     }
+
 
     /**
      * 获取index

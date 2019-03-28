@@ -1,6 +1,5 @@
-package artifact.modules.common.dao.impl;
+package artifact.modules.common.dao;
 
-import artifact.modules.common.dao.MongoDao;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.result.DeleteResult;
@@ -9,51 +8,50 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class MongoDaoImpl<T> {
+public abstract class MongoRepository<T> {
 
+    protected int strategy = Strategy.NO_IGNORE;
     private Pattern pattern = Pattern.compile("\\S+");
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    public void save(T entity) {
-        mongoTemplate.save(entity);
+
+    /**
+     * 保存多个实体
+     *
+     * @param entities
+     */
+    public void save(T... entities) {
+        for (T entity : entities) {
+            mongoTemplate.save(entity);
+        }
     }
 
-
-    public Long update(T entity) {
-        String primary = "id";
-        Map<String, Object> map = parse(entity);
-
-        Object obj = map.get(primary);
-        if (obj == null) {
-            throw new RuntimeException("lack of value for primary key:id !");
+    /**
+     * 更新多个实体
+     *
+     * @param entities
+     */
+    public void update(T... entities) {
+        for (T entity : entities) {
+            mongoTemplate.save(entity);
         }
-        Long id = Long.valueOf(String.valueOf(obj));
-        map.remove("id");
-
-        Query query = new Query();
-        query.addCriteria(Criteria.where(primary).is(id));
-
-        Update update = new Update();
-        for (String key : map.keySet()) {
-            update.set(key, map.get(key));
-        }
-
-        UpdateResult result = mongoTemplate.updateFirst(query, update, getGenericClass());
-        return result.getModifiedCount();
     }
 
     /**
@@ -110,19 +108,6 @@ public abstract class MongoDaoImpl<T> {
     }
 
     /**
-     * 查询符合条件的数量
-     * zyw
-     *
-     * @param para
-     * @return
-     */
-    public Long count(Map<String, Object> para) {
-        Query query = generateQuery(para);
-
-        return mongoTemplate.count(query, getGenericClass());
-    }
-
-    /**
      * 查询满足条件数据
      * zyw
      *
@@ -137,6 +122,20 @@ public abstract class MongoDaoImpl<T> {
         }
         return mongoTemplate.find(query, getGenericClass());
     }
+
+    /**
+     * 查询符合条件的数量
+     * zyw
+     *
+     * @param para
+     * @return
+     */
+    public Long count(Map<String, Object> para) {
+        Query query = generateQuery(para);
+
+        return mongoTemplate.count(query, getGenericClass());
+    }
+
 
     /**
      * 执行原生查询
@@ -172,6 +171,18 @@ public abstract class MongoDaoImpl<T> {
     }
 
     /**
+     * 删除实体[数组]
+     *
+     * @param ids 实体ID或数组
+     */
+    public Long delete(Long... ids) {
+        Map para = new HashMap(1);
+        para.put("id$in", ids);
+
+        return this.delete(para);
+    }
+
+    /**
      * 删除满足条件的实体
      *
      * @param para
@@ -184,18 +195,6 @@ public abstract class MongoDaoImpl<T> {
         return result.getDeletedCount();
     }
 
-
-    /**
-     * 删除实体[数组]
-     *
-     * @param ids 实体ID或数组
-     */
-    public Long delete(Long... ids) {
-        Map para = new HashMap(1);
-        para.put("id$in", ids);
-
-        return this.delete(para);
-    }
 
     /**
      * 根据ID查询
@@ -218,7 +217,7 @@ public abstract class MongoDaoImpl<T> {
      * @param ids
      * @return
      */
-    public List<T> find(Long... ids) throws Exception {
+    public List<T> find(Long... ids) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").in(ids));
         List<T> dataList = mongoTemplate.find(query, getGenericClass());
@@ -242,7 +241,14 @@ public abstract class MongoDaoImpl<T> {
         }
         if (para != null) {
             for (String key : para.keySet()) {
-                query.addCriteria(generateCriteria(key, para.get(key)));
+                Object val = para.get(key);
+                //检查策略
+                if (val == null && strategy % 10 == 1) {
+                    continue;
+                } else if (String.valueOf(val).trim().length() == 1 && strategy > 9) {
+                    continue;
+                }
+                query.addCriteria(generateCriteria(key, val));
             }
         }
         return query;
@@ -284,6 +290,12 @@ public abstract class MongoDaoImpl<T> {
         return criteria;
     }
 
+    /**
+     * 生产排序条件
+     *
+     * @param order
+     * @return
+     */
     private Sort generateSort(String order) {
         order = order.trim();
         String[] array = order.split(",");
@@ -310,37 +322,47 @@ public abstract class MongoDaoImpl<T> {
         return new Sort(orderList);
     }
 
-
-    private Map<String, Object> parse(T entity) {
-
-        Class clazz = entity.getClass();
-        Set<Field> fieldSet = new HashSet<>();
-        Field[] fields = clazz.getDeclaredFields();
-        fieldSet.addAll(Arrays.asList(fields));
-        Map<String, Object> ret = new HashMap(fieldSet.size());
-        while (!clazz.getSuperclass().getSimpleName().toLowerCase().equals("object")) {
-            clazz = clazz.getSuperclass();
-            fieldSet.addAll(Arrays.asList(clazz.getDeclaredFields()));
-        }
-        for (Field field : fieldSet) {
-            field.setAccessible(true);
-            try {
-                ret.put(field.getName(), field.get(entity));
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(String.format("entity field:%s reflect failed !", field.getName()));
-            }
-        }
-        return ret;
-    }
-
+    /**
+     * 获取子类实际泛型参数类型
+     *
+     * @return
+     */
     private Class getGenericClass() {
         Type type = this.getClass().getGenericSuperclass();
         type = ((ParameterizedType) type).getActualTypeArguments()[0];
         return (Class<T>) type;
     }
 
-    public List<Map> aggregate(Map match, Map group, Map aggregate) {
-
-        return null;
+    /**
+     * 设置map生成query的对value的策略
+     *
+     * @param strategy
+     */
+    public void setStrategy(int strategy) {
+        this.strategy = strategy;
     }
+
+    /**
+     * 执行原生聚合查询语句
+     *
+     * @param aggregation
+     * @return
+     */
+
+    public List<Map> excuteAggregate(Aggregation aggregation) {
+
+        AggregationResults<Map> ret = mongoTemplate.aggregate(aggregation, getGenericClass(), Map.class);
+        return ret.getMappedResults();
+    }
+
+
+    public interface Strategy {
+        int IGNORE_NULL_AND_EMPTY = 11;
+        int IGNORE_NULL = 1;
+        int IGNORE_EMPTY = 10;
+        int NO_IGNORE = 0;
+
+
+    }
+
 }
