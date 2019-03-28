@@ -2,7 +2,10 @@ package artifact.modules.common.util;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,7 +23,8 @@ public class Excel2PdfUtil {
     private HSSFWorkbook wb;
     private Document document;
     private Font defaultFont;
-
+    private boolean[] borders = new boolean[]{false, false};
+    private Option option = new Option();
 
     public void load(String path) {
         try {
@@ -39,24 +43,6 @@ public class Excel2PdfUtil {
         this.wb = wb;
     }
 
-    public void print() {
-        HSSFSheet sheet = wb.getSheetAt(0);
-        for (int i = 0; i <= sheet.getLastRowNum(); i++) {
-            HSSFRow row = sheet.getRow(i);
-            StringBuilder sb = new StringBuilder();
-            for (int j = 0; j <= row.getLastCellNum(); j++) {
-                HSSFCell cell = row.getCell(j, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-                String value = cell == null ? "" : cell.getStringCellValue();
-                sb.append(value + "\t");
-
-            }
-            System.out.println(sb.toString());
-
-        }
-
-
-    }
-
 
     private PdfPTable handleSheet(HSSFSheet sheet) {
         if (sheet == null) {
@@ -72,9 +58,14 @@ public class Excel2PdfUtil {
                 if (cell == null) {
                     table.addCell("");
                 } else {
+                    //检查相邻元素边框
+                    checkBorder(sheet, i, j);
                     table.addCell(handleCell(cell));
+
+
                 }
             }
+
             table.addCell(getDefaultCell());
             table.completeRow();
 
@@ -99,8 +90,9 @@ public class Excel2PdfUtil {
             PdfPCell cell = table.getRow(firstRow).getCells()[firstColumn];
             cell.setColspan(lastColumn - firstColumn + 1);
             cell.setRowspan(lastRow - firstRow + 1);
-            HSSFCell hssfCell = sheet.getRow(firstRow).getCell(firstColumn);
-            handleStyle(hssfCell, cell);
+            // HSSFCell hssfCell =
+            sheet.getRow(firstRow).getCell(firstColumn);
+            //  handleStyle(hssfCell, cell);
         }
 
         return table;
@@ -109,12 +101,8 @@ public class Excel2PdfUtil {
     private PdfPCell handleCell(HSSFCell cell) {
 
         String value = cell.toString();
-        // value = value.equals("") ? "" : value;
         PdfPCell ret = getDefaultCell();
-        // new PdfPCell();
         ret.setPhrase(new Paragraph(value, getDefaultFont()));
-
-        CellStyle style = cell.getCellStyle();
 
         handleStyle(cell, ret);
 
@@ -207,11 +195,29 @@ public class Excel2PdfUtil {
         CellStyle style = cell.getCellStyle();
 
         BorderStyle borderStyle;
-        borderStyle = style.getBorderBottomEnum();
-        //只根据底部判断,不支持逐边设置
+        //头部
+        borderStyle = style.getBorderTopEnum();
+        if (borderStyle != BorderStyle.NONE && !borders[1]) {
+            tcell.setBorder(Rectangle.TOP);
+            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getTopBorderColor())));
+        }
+        //右边
+        borderStyle = style.getBorderRightEnum();
         if (borderStyle != BorderStyle.NONE) {
-            tcell.setBorder(Rectangle.BOX);
+            tcell.setBorder(Rectangle.RIGHT);
+            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getRightBorderColor())));
+        }
+        //底部
+        borderStyle = style.getBorderBottomEnum();
+        if (borderStyle != BorderStyle.NONE) {
+            tcell.setBorder(Rectangle.BOTTOM);
             tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getBottomBorderColor())));
+        }
+        //右边
+        borderStyle = style.getBorderLeftEnum();
+        if (borderStyle != BorderStyle.NONE && !borders[0]) {
+            tcell.setBorder(Rectangle.LEFT);
+            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getLeftBorderColor())));
         }
 
     }
@@ -245,4 +251,30 @@ public class Excel2PdfUtil {
         return defaultFont;
     }
 
+
+    private void checkBorder(HSSFSheet sheet, int row, int col) {
+        if (row < 0 && col < 0) {
+            throw new RuntimeException("Illegal args found !");
+        }
+        //check top
+        if (row == 0) {
+            borders[1] = false;
+        } else {
+            HSSFCell cell = sheet.getRow(row - 1).getCell(col);
+            borders[1] = cell.
+        }
+        //check let
+        if (col == 0) {
+            borders[0] = false;
+        } else {
+            PdfPCell cell = sheet.getRow(row).getCells()[col - 1];
+            borders[1] = cell.hasBorder(Rectangle.RIGHT);
+        }
+
+
+    }
+
+    class Option {
+        float borderSize = 0.5F;
+    }
 }

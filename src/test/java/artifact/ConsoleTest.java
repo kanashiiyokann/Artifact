@@ -5,7 +5,6 @@ import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
 
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,8 +23,11 @@ public class ConsoleTest {
 
     public static void test() throws Exception {
 
-        URI uri=new URI("https://www.baidu.com/img/bd_logo1.png");
-        System.out.println(uri.getPath());
+        int a = 1, b = 2, c = 4;
+        System.out.println(a + b + c);
+        System.out.println(a | b | c);
+        System.out.println(2 | 4 | 6);
+
 
 
     }
