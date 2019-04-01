@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+
+<body>
+<div id="app">
+    <input v-model="input">
+    <button  v-on:keypress.enter="submit">submit</button>
+    <ul>
+        <!--<li-fruit v-for="fruit of fruits" v-bind:fruit="fruit"  />-->
+    </ul>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+    Vue.component("li-fruit", {
+        props: ["fruit"],
+        template: '<li>{{fruit}}</li>'
+    });
+   let app= new Vue({
+        el: "#app",
+        data: {input: "", fruits: []},
+        methods: {
+            submit: function () {
+
+                this.fruits.push(this.input);
+                this.input = '';
+            }
+        }
+    });
+</script>
