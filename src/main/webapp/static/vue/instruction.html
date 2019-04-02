@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Title</title>
+</head>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<body>
+<div id="app">
+    <input v-on:click="changeVisible" type="checkbox"><span v-show="visible">fuck you !</span><br>
+    <input v-on:click="changeVisible" type="checkbox"><span v-if="visible">fuck you ,too !</span><br>
+    <span>fruits</span>
+    <ul>
+        <li v-for="(fruit,index) of fruits" v-bind:sort="index">{{fruit}}</li>
+    </ul>
+    <input type="text" v-model="fruit"> <br>
+    <button v-on:click="addFruit">submit</button>
+</div>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {visible: true, fruit: "", fruits: ["orange", "pear", "apple"]},
+        methods: {
+            changeVisible: function () {
+                this.visible = this.visible === false;
+            },
+            addFruit: function () {
+                this.fruits.push(this.fruit);
+                this.fruit = "";
+            }
+        }
+    });
+</script>
+</body>
+</html>

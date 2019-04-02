@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh"
+>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Title</title>
+</head>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<body>
+<div id="app">
+    <span>{{fullName}}</span><br>
+    <span>{{firstName+ " "+lastName}}</span><br>
+    <span>{{firstName}} {{lastName}}</span><br>
+    first name:<input type="text" v-model="firstName"><br>
+    last name<input type="text" v-model="lastName"><br>
+</div>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {firstName: "", lastName: ""},
+        computed: {
+            fullName: function () {
+                return this.firstName + " " + this.lastName;
+            }
+        }
+    });
+</script>
+</body>
+</html>

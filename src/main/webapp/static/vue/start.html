@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Title</title>
+</head>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<body>
+<div id="app">
+    <span v-bind:title="tip" v-on:click="switchContent">{{hello}}</span>
+</div>
+<script>
+    let app = new Vue({
+        el: "#app",
+        data: {hello: '你好!', tip: "click"},
+        methods: {
+            switchContent: function () {
+                this.hello = 'fuck you !';
+            }
+        }
+    });
+</script>
+</body>
+</html>
