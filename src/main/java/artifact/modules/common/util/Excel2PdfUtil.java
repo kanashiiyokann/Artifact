@@ -261,14 +261,14 @@ public class Excel2PdfUtil {
             borders[1] = false;
         } else {
             HSSFCell cell = sheet.getRow(row - 1).getCell(col);
-            borders[1] = cell.
+          //  borders[1] = cell.
         }
         //check let
         if (col == 0) {
             borders[0] = false;
         } else {
-            PdfPCell cell = sheet.getRow(row).getCells()[col - 1];
-            borders[1] = cell.hasBorder(Rectangle.RIGHT);
+            HSSFCell cell = sheet.getRow(row).getCell(col - 1);
+           // borders[1] = cell.hasBorder(Rectangle.RIGHT);
         }
 
 

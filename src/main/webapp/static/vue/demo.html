@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-for="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+
+<body>
+<div id="app">
+    <div><img v-bind:src="current.src"></div>
+    <a href="#" v-on:click="indexChange(-1)">上一个</a>
+    <a href="#" v-on:click="indexChange(1)">下一个</a>
+    <div>
+        <p v-for="journal of current.journals">
+            <span>{{journal.name}}:</span> <input type="text" v-model="journal.amount">
+        </p>
+    </div>
+    <button v-on:click="submit">console</button>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+
+    let data = {
+        bills: [{
+            src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/u=1160200404,45539796&fm=26&gp=0.jpg",
+            journals: [{name: "金额"}]
+        },
+            {
+                src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/asdadfadaa1.jpg",
+                journals: [{name: "税额", amount: 10}, {name: "合计金额"}]
+            }],
+        index: 0
+    };
+
+
+    let app = new Vue({
+        el: "#app",
+        data: data,
+        methods: {
+            submit: function () {
+                console.log(this.bills);
+            },
+            indexChange: function (increase) {
+                let ret = this.index + increase;
+                if (ret >= 0 && ret <= this.bills.length - 1) {
+                    this.index = ret;
+                } else {
+                    console.log("out of range!")
+                }
+            },
+        },
+        computed: {
+            current: function () {
+                return this.bills[this.index];
+            }
+        }
+    });
+</script>

@@ -9,7 +9,7 @@
 <body>
 <div id="app">
     <input v-model="input">
-    <button  v-on:keypress.enter="submit">submit</button>
+    <button  v-on:input="submit">submit</button>
     <ul>
         <!--<li-fruit v-for="fruit of fruits" v-bind:fruit="fruit"  />-->
     </ul>
@@ -28,8 +28,9 @@
         methods: {
             submit: function () {
 
-                this.fruits.push(this.input);
-                this.input = '';
+                console.log(this.input)
+                // this.fruits.push(this.input);
+                // this.input = '';
             }
         }
     });

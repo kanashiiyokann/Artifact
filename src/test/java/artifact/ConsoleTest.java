@@ -4,10 +4,13 @@ package artifact;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
+import artifact.modules.user.entity.User;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,20 +20,17 @@ public class ConsoleTest {
     private static Pattern p = Pattern.compile("\\S+");
 
     public static void main(String[] args) throws Exception {
-
-        test6();
+        Long[] ids=new Long[]{1L,2L};
+        test(ids,3L,4L);
     }
 
-    public static void test() throws Exception {
+    public static void test(Long[] ids,Long... sss) throws Exception {
 
-        int a = 1, b = 2, c = 4;
-        System.out.println(a + b + c);
-        System.out.println(a | b | c);
-        System.out.println(2 | 4 | 6);
-
-
+        System.out.println(ids.getClass());
+        System.out.println(sss.getClass());
 
     }
+
     public static void test6() throws Exception {
 
         Excel2PdfUtil util = new Excel2PdfUtil();
@@ -40,6 +40,7 @@ public class ConsoleTest {
         util.fetch(path);
 
     }
+
     public static String test5(int year, int month) throws Exception {
 
         Calendar calendar = Calendar.getInstance();
