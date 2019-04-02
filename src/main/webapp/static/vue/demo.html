@@ -6,11 +6,18 @@
     <title>test</title>
 </head>
 <script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<style type="text/css">
+    img{
+        width:500px;
+        height:270px;
 
+    }
+</style>
 <body>
 <div id="app">
     <div><img v-bind:src="current.src"></div>
     <a href="#" v-on:click="indexChange(-1)">上一个</a>
+    <span>{{index+1}}/{{bills.length}}</span>
     <a href="#" v-on:click="indexChange(1)">下一个</a>
     <div>
         <p v-for="journal of current.journals">
@@ -25,14 +32,20 @@
 
 
     let data = {
-        bills: [{
-            src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/u=1160200404,45539796&fm=26&gp=0.jpg",
-            journals: [{name: "金额"}]
-        },
+        bills: [
+            {
+                src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/u=1160200404,45539796&fm=26&gp=0.jpg",
+                journals: [{name: "金额"}]
+            },
             {
                 src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/asdadfadaa1.jpg",
                 journals: [{name: "税额", amount: 10}, {name: "合计金额"}]
-            }],
+            },
+            {
+                src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/asdadfadaa1.jpg",
+                journals: [{name: "税额", amount: 10}, {name: "合计金额",amount:34}]
+            }
+        ],
         index: 0
     };
 
