@@ -7,18 +7,41 @@
     <title>Title</title>
 </head>
 <script src="../js/vue.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+
+</script>
 <body>
 <div id="app">
     <input v-on:click="changeVisible" type="checkbox"><span v-show="visible">fuck you !</span><br>
     <input v-on:click="changeVisible" type="checkbox"><span v-if="visible">fuck you ,too !</span><br>
     <span>fruits</span>
     <ul>
-        <li v-for="(fruit,index) of fruits" v-bind:sort="index">{{fruit}}</li>
+        <li-fruit v-for="(fruit,index) of fruits"
+                  v-bind:fruit="fruit"
+                  v-bind:index="index"
+                  v-on:deletefruit="deleteFruit"
+        ></li-fruit>
     </ul>
     <input type="text" v-model="fruit"> <br>
     <button v-on:click="addFruit">submit</button>
 </div>
-<script>
+
+</body>
+</html>
+<script type="text/javascript">
+
+    Vue.component("li-fruit", {
+        props: ["fruit", "index"],
+        template: "<li v-on:click='emitDelete'>{{fruit}}</li>",
+        methods: {
+            emitDelete: function () {
+                this.$emit("deletefruit", this.index);
+                console.log("awsl")
+            }
+        }
+    });
+
     let app = new Vue({
         el: "#app",
         data: {visible: true, fruit: "", fruits: ["orange", "pear", "apple"]},
@@ -29,9 +52,11 @@
             addFruit: function () {
                 this.fruits.push(this.fruit);
                 this.fruit = "";
+            },
+            deleteFruit: function (index) {
+                this.fruits.splice(index, 1);
+                console.log("=======");
             }
         }
     });
 </script>
-</body>
-</html>
