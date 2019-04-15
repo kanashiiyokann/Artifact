@@ -20,8 +20,7 @@ public class ConsoleTest {
     private static Pattern p = Pattern.compile("\\S+");
 
     public static void main(String[] args) throws Exception {
-        Long[] ids=new Long[]{1L,2L};
-        test(ids,3L,4L);
+        test6();
     }
 
     public static void test(Long[] ids,Long... sss) throws Exception {
