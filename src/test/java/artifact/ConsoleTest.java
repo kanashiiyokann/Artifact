@@ -36,7 +36,7 @@ public class ConsoleTest {
         String path = "src/main/resources/20190312184124凭证汇总表.xls";
         util.load(path);
         path = "C:\\Users\\DGG-S27-D-20\\Desktop\\凭证汇总表.pdf";
-        util.fetch(path);
+        util.fetch(path,5,38);
 
     }
 

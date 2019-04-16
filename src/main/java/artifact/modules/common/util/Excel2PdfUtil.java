@@ -63,7 +63,6 @@ public class Excel2PdfUtil {
 
             table.addCell(getDefaultCell());
             table.completeRow();
-
         }
         //列宽
         float[] widths = new float[tableColNum + 1];
@@ -246,9 +245,28 @@ public class Excel2PdfUtil {
 
     }
 
-    public void fetch(String path) throws Exception {
+
+    private   List<PdfPRow> copyHeader(PdfPTable table ,Integer length){
+
+        List<PdfPRow> headers = table.getRows(0, length);
+
+        List<PdfPRow> copies=new ArrayList<>(headers.size());
+        headers.forEach(row->copies.add(new PdfPRow(row)));
+        return copies;
+    }
+
+    public void fetch(String path, Integer header, Integer pageSize) throws Exception {
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
         PdfPTable table = handleSheet(wb.getSheetAt(0));
+        //
+        List<PdfPRow> headers = table.getRows(0, header);
+        int page = 1;
+        while (table.getRows().size() > page * pageSize) {
+            table.getRows().addAll(pageSize * page, copyHeader(table,header));
+            page++;
+        }
+
+        //
         document.open();
         document.add(table);
         document.close();
