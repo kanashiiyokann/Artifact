@@ -17,14 +17,11 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class MongoRepository<T> {
+public abstract class BaseMongoDao<T> {
 
     protected int strategy = Strategy.NO_IGNORE;
     private Pattern pattern = Pattern.compile("\\S+");
@@ -254,6 +251,87 @@ public abstract class MongoRepository<T> {
         return query;
     }
 
+
+    public Criteria generateCriteria(Map para) {
+        Criteria ret = new Criteria();
+
+        if (para != null && para.size() > 0) {
+
+            List<Filter> filterList = new ArrayList<>();
+            para.forEach((k, v) -> filterList.add(new Filter(k.toString(), v)));
+            filterList.sort(Comparator.comparing(Filter::getKey));
+            String prekey = null;
+            for (Filter filter : filterList) {
+                String key = filter.getKey();
+                if (!key.equals(prekey)) {
+                    prekey = key;
+                    ret = ret.and(key);
+                }
+                try {
+                    filter.getMethod().invoke(ret, filter.getValue());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    private class Filter {
+        private Pattern pattern = Pattern.compile("[a-zA-Z_]+");
+        private String key;
+        private Object value;
+        private String method;
+        private String seperator = "$";
+        public List<Method> methods = new ArrayList<>();
+
+        public Filter(String key, Object value) {
+            String method = "is";
+
+            Matcher matcher = pattern.matcher(key);
+            if (matcher.find()) {
+                key = matcher.group(0);
+            }
+            if (matcher.find()) {
+                method = matcher.group(0);
+            }
+            this.key = key;
+            this.value = value;
+            this.method = method;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Method getMethod() {
+
+            if (method == null || method.trim().length() == 0) {
+                new Exception("错误的方法名称！").printStackTrace();
+            }
+            Method ret = null;
+            Class clazz = Criteria.class;
+            try {
+
+                if (method.equals("regex")) {
+                    ret = clazz.getDeclaredMethod(method, value.getClass());
+                } else {
+                    ret = clazz.getDeclaredMethod(method, Object.class);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return ret;
+        }
+
+    }
+
     /**
      * 生成Criteria
      *
@@ -349,9 +427,9 @@ public abstract class MongoRepository<T> {
      * @return
      */
 
-    public List<Map> excuteAggregate(Aggregation aggregation) {
+    public <T> List<T> excuteAggregate(Aggregation aggregation, Class<T> clazz) {
 
-        AggregationResults<Map> ret = mongoTemplate.aggregate(aggregation, getGenericClass(), Map.class);
+        AggregationResults<T> ret = mongoTemplate.aggregate(aggregation, getGenericClass(), clazz);
         return ret.getMappedResults();
     }
 
