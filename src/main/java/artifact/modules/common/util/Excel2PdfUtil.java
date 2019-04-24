@@ -1,7 +1,7 @@
 package artifact.modules.common.util;
 
-import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -86,16 +86,6 @@ public class Excel2PdfUtil {
             cell.setRowspan(lastRow - firstRow + 1);
             sheet.getRow(firstRow).getCell(firstColumn);
         }
-        //重复边框处理
-        for (int i = 0; i < table.getRows().size(); i++) {
-            PdfPRow row = table.getRow(i);
-            for (int j = 0; j < row.getCells().length - 1; j++) {//多一列空白列
-                PdfPCell cell = row.getCells()[j];
-
-
-            }
-        }
-
 
         return table;
     }
@@ -200,13 +190,17 @@ public class Excel2PdfUtil {
         HSSFCell compare;
         int i = cell.getRowIndex();
         int j = cell.getColumnIndex();
-        if (i > 1) {
+        if (i > 0) {
             compare = currentSheet.getRow(i - 1).getCell(j);
-            topNecessary = compare.getCellStyle().getBorderBottomEnum().equals(BorderStyle.NONE);
+            if (compare != null) {
+                topNecessary = compare.getCellStyle().getBorderBottomEnum().equals(BorderStyle.NONE);
+            }
         }
-        if (j > 1) {
+        if (j > 0) {
             compare = currentSheet.getRow(i).getCell(j - 1);
-            leftNecessary = compare.getCellStyle().getBorderRightEnum().equals(BorderStyle.NONE);
+            if (compare != null) {
+                leftNecessary = compare.getCellStyle().getBorderRightEnum().equals(BorderStyle.NONE);
+            }
         }
 
         BorderStyle borderStyle;
@@ -217,58 +211,53 @@ public class Excel2PdfUtil {
         borderStyle = style.getBorderTopEnum();
         if (borderStyle != BorderStyle.NONE && topNecessary) {
             borderList.add(Rectangle.TOP);
-            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getTopBorderColor())));
+            tcell.setBorderColorTop(handleColor(wb.getCustomPalette().getColor(style.getTopBorderColor())));
         }
         //右边
         borderStyle = style.getBorderRightEnum();
         if (borderStyle != BorderStyle.NONE) {
             borderList.add(Rectangle.RIGHT);
-            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getRightBorderColor())));
+            tcell.setBorderColorRight(handleColor(wb.getCustomPalette().getColor(style.getRightBorderColor())));
         }
         //底部
         borderStyle = style.getBorderBottomEnum();
         if (borderStyle != BorderStyle.NONE) {
             borderList.add(Rectangle.BOTTOM);
-            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getBottomBorderColor())));
+            tcell.setBorderColorBottom(handleColor(wb.getCustomPalette().getColor(style.getBottomBorderColor())));
         }
         //左边
         borderStyle = style.getBorderLeftEnum();
         if (borderStyle != BorderStyle.NONE && leftNecessary) {
             borderList.add(Rectangle.LEFT);
-            tcell.setBorderColor(handleColor(wb.getCustomPalette().getColor(style.getLeftBorderColor())));
+            tcell.setBorderColorLeft(handleColor(wb.getCustomPalette().getColor(style.getLeftBorderColor())));
         }
+
         Integer borders = 0;
         for (Integer border : borderList) {
             borders += border;
         }
-        tcell.setBorder(borders);
+        if (borders != 0) {
+            tcell.setBorder(borders);
+        }
 
     }
 
 
-    private   List<PdfPRow> copyHeader(PdfPTable table ,Integer length){
+    private List<PdfPRow> copyRowList(List<PdfPRow> headers) {
 
-        List<PdfPRow> headers = table.getRows(0, length);
-
-        List<PdfPRow> copies=new ArrayList<>(headers.size());
-        headers.forEach(row->copies.add(new PdfPRow(row)));
+        List<PdfPRow> copies = new ArrayList<>(headers.size());
+        headers.forEach(row -> copies.add(new PdfPRow(row)));
         return copies;
     }
 
-    public void fetch(String path, Integer header, Integer pageSize) throws Exception {
+    public void fetch(String path, Integer header) throws Exception {
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
         PdfPTable table = handleSheet(wb.getSheetAt(0));
-        //
-        List<PdfPRow> headers = table.getRows(0, header);
-        int page = 1;
-        while (table.getRows().size() > page * pageSize) {
-            table.getRows().addAll(pageSize * page, copyHeader(table,header));
-            page++;
-        }
-
+        table.setHeaderRows(5);
         //
         document.open();
         document.add(table);
+
         document.close();
 
         writer.close();

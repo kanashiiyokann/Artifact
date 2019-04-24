@@ -4,13 +4,11 @@ package artifact;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
-import artifact.modules.user.entity.User;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,23 +18,26 @@ public class ConsoleTest {
     private static Pattern p = Pattern.compile("\\S+");
 
     public static void main(String[] args) throws Exception {
-        test6();
+        test7();
     }
 
-    public static void test(Long[] ids,Long... sss) throws Exception {
+    public static void test7() throws Exception {
 
-        System.out.println(ids.getClass());
-        System.out.println(sss.getClass());
+        LinkedHashMap<Integer, Object> map = new LinkedHashMap();
+        map.put(1, 1);
+        map.put(2, 2);
+        map.put(3, 3);
+        map.put(1, 10);
 
     }
 
     public static void test6() throws Exception {
 
         Excel2PdfUtil util = new Excel2PdfUtil();
-        String path = "src/main/resources/20190312184124凭证汇总表.xls";
+        String path = "src/main/resources/凭证汇总表.xls";
         util.load(path);
         path = "C:\\Users\\DGG-S27-D-20\\Desktop\\凭证汇总表.pdf";
-        util.fetch(path,5,38);
+        util.fetch(path, 5);
 
     }
 

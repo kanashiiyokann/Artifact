@@ -1,5 +1,6 @@
 package artifact.modules.user.service;
 
+import artifact.modules.common.dao.BaseMongoDao.Strategy;
 import artifact.modules.user.dao.UserDao;
 import artifact.modules.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,12 @@ public class UserService {
         para.put("age$gte", 18);
         para.put("state", 2);
 
-        Criteria criteria = userDao.generateCriteria(para);
+        Criteria criteria = userDao.generateCriteria(para, Strategy.IGNORE_NULL_AND_EMPTY);
 
         Aggregation aggregation = Aggregation.newAggregation(
                 Aggregation.match(criteria)
         );
-        List<User> users = userDao.excuteAggregate(aggregation, User.class);
+        List<User> users = userDao.aggregate(aggregation, User.class);
 
         System.out.println(users);
 

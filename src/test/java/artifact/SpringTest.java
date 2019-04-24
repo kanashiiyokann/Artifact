@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 @RunWith(SpringRunner.class)
 public class SpringTest {
 
+
     @Resource
     private UserService userService;
 

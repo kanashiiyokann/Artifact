@@ -251,20 +251,39 @@ public abstract class BaseMongoDao<T> {
         return query;
     }
 
+    private static boolean valueIntercept(Object value, int strategy) {
 
-    public Criteria generateCriteria(Map para) {
+        if (strategy == Strategy.NO_IGNORE) return false;
+        if (value == null && strategy % 10 == 1) return true;
+        if (isEmpty(value) && strategy / 10 == 1) return true;
+        return false;
+    }
+
+    private static boolean isEmpty(Object value) {
+        if (value == null) return true;
+        if (value instanceof String) {
+            return value.toString().trim().length() == 0;
+        }
+        return false;
+    }
+
+    public Criteria generateCriteria(Map para, int strategy) {
         Criteria ret = new Criteria();
 
         if (para != null && para.size() > 0) {
 
             List<Filter> filterList = new ArrayList<>();
-            para.forEach((k, v) -> filterList.add(new Filter(k.toString(), v)));
+            para.forEach((k, v) -> {
+                if (!valueIntercept(v, strategy)) {
+                    filterList.add(new Filter(k.toString(), v));
+                }
+            });
             filterList.sort(Comparator.comparing(Filter::getKey));
-            String prekey = null;
+            String preKey = null;
             for (Filter filter : filterList) {
                 String key = filter.getKey();
-                if (!key.equals(prekey)) {
-                    prekey = key;
+                if (!key.equals(preKey)) {
+                    preKey = key;
                     ret = ret.and(key);
                 }
                 try {
@@ -427,7 +446,7 @@ public abstract class BaseMongoDao<T> {
      * @return
      */
 
-    public <T> List<T> excuteAggregate(Aggregation aggregation, Class<T> clazz) {
+    public <T> List<T> aggregate(Aggregation aggregation, Class<T> clazz) {
 
         AggregationResults<T> ret = mongoTemplate.aggregate(aggregation, getGenericClass(), clazz);
         return ret.getMappedResults();
@@ -437,9 +456,7 @@ public abstract class BaseMongoDao<T> {
     public interface Strategy {
         int IGNORE_NULL_AND_EMPTY = 11;
         int IGNORE_NULL = 1;
-        int IGNORE_EMPTY = 10;
         int NO_IGNORE = 0;
-
 
     }
 

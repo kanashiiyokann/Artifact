@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml"
+>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<script src="../js/vue.js"></script>
+<style type="text/css">
+    img {
+        width: 500px;
+        height: 270px;
+
+    }
+</style>
+<body>
+<div id="app">
+    <div><img v-bind:src="current.src"></div>
+    <a href="#" v-on:click="indexChange(-1)">上一个</a>
+    <span>{{index+1}}/{{bills.length}}</span>
+    <a href="#" v-on:click="indexChange(1)">下一个</a>
+    <div>
+        <div v-for="journal of current.journals">
+            <div v-for="aux of journal.auxList" v-if="aux.name==='客户' || aux.name==='供应商'">
+                <span>{{aux.name}}:</span> <input type="text" v-model="aux.value">
+            </div>
+            <span>{{journal.name}}:</span> <input type="text" v-model="journal.amount">
+        </div>
+    </div>
+    <button v-on:click="submit">console</button>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+
+
+    let data = {
+        bills: [
+            {
+                src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/u=1160200404,45539796&fm=26&gp=0.jpg",
+                journals: [
+                    {name: "合计金额"},
+                    {name: "金额", auxList: [{name: "客户"}]},
+                    {name: "金额", auxList: [{name: "供应商"}]},
+                    {name: "金额", auxList: [{name: "客户"}]},
+                    {name: "金额", auxList: [{name: "数量"}]},
+                    {name: "金额"},
+                    {name: "金额", auxList: [{name: "客户"}]},
+                ]
+            },
+            {
+                src: "https://testdggoss1.oss-cn-beijing.aliyuncs.com/asdadfadaa1.jpg",
+                journals: [{name: "税额", amount: 10}]
+            }],
+        index: 0
+    };
+
+
+    let app = new Vue({
+        el: "#app",
+        data: data,
+        methods: {
+            submit: function () {
+                this.current = this.current;
+                console.log(JSON.stringify(this.bills));
+            },
+            indexChange: function (increase) {
+                let ret = this.index + increase;
+                if (ret >= 0 && ret <= this.bills.length - 1) {
+                    this.current = this.current;
+                    this.index = ret;
+                } else {
+                    console.log("out of range!")
+                }
+            },
+            clone(obj) {
+                if (obj === null || obj === undefined) return obj;
+                return JSON.parse(JSON.stringify(obj));
+            }
+        },
+        computed: {
+            current: {
+                get() {
+                    let bill = this.clone(this.bills[this.index]);
+                    //合并相同金额来源
+                    let journals = {};
+                    bill.journals.forEach(function (journal) {
+                        journals[journal.name] = journals[journal.name] || {};
+                        let stored = journals[journal.name].auxList || [];
+                        journal.auxList = journal.auxList || [];
+                        stored.forEach(e => {
+                            if (journal.auxList.filter(f => f.name === e.name).length === 0)
+                                journal.auxList.push(e);
+                        });
+                        journals[journal.name] = journal;
+
+                    });
+                    //
+                    bill.journals = [];
+                    for (let key in journals) {
+                        bill.journals.push(journals[key]);
+                    }
+                    //排序 合计金额最后 辅助核算 先客户后供应商 然后其他
+                    bill.journals.sort(function (j1, j2) {
+                        let s1 = j1.name === "合计金额" ? 1 : 0;
+                        let s2 = j2.name === "合计金额" ? 1 : 0;
+                        return s1 - s2;
+                    });
+
+                    let sorts = {"客户": 1, "供应商": 2};
+                    bill.journals.forEach(j => j.auxList.sort((a1, a2) => {
+                        let s1 = sorts[a1.name] || 9;
+                        let s2 = sorts[a2.name] || 9;
+                        return s1 - s2;
+                    }));
+
+                    return bill;
+                },
+                set(bill) {
+                    let origin = this.bills[this.index];
+                    let journals = {};
+                    bill.journals.forEach(function (journal) {
+                        journals[journal.name] = journal;
+                    });
+                    //辅助核算
+                    origin.journals.forEach(function (journal) {
+                        let sample = journals[journal.name];
+                        journal.amount = sample.amount;
+                        journal.auxList = journal.auxList || [];
+                        journal.auxList.forEach(function (aux) {
+                            aux.value = sample.auxList.filter(item => item.name === aux.name)[0].value;
+                        });
+
+                    });
+
+                }
+            }
+        }
+    });
+</script>
