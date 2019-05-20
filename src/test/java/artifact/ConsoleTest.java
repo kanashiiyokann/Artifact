@@ -8,7 +8,6 @@ import artifact.modules.common.util.ExcelUtil.Style;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,11 +22,9 @@ public class ConsoleTest {
 
     public static void test7() throws Exception {
 
-        LinkedHashMap<Integer, Object> map = new LinkedHashMap();
-        map.put(1, 1);
-        map.put(2, 2);
-        map.put(3, 3);
-        map.put(1, 10);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        System.out.println(calendar.get(Calendar.MONTH) + 1);
 
     }
 

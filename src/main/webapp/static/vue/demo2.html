@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <title>test</title>
 </head>
-<script src="../js/vue.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
 <style type="text/css">
     img {
         width: 500px;
@@ -61,7 +61,7 @@
         data: data,
         methods: {
             submit: function () {
-                this.current = this.current;
+                this.current = this.current;//触发set方法
                 console.log(JSON.stringify(this.bills));
             },
             indexChange: function (increase) {

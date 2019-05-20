@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+</head>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<body>
+</body>
+</html>
+<script type="module">
+    import util from '../js/util.js';
+
+    util.test((obj) => console.log(obj), "this is a test sentence !");
+
+    new Promise(((resolve, reject) => {
+        $.ajax({
+            url: "",
+            type: "post",
+            success: function (company) {
+                resolve(company);
+            },
+            error: function () {
+                reject("请求1失败");
+            }
+        });
+    }))
+        .then((company) => {
+            //
+            return new Promise(((resolve, reject) => {
+                if (!company.id) {
+                    $.ajax({
+                        url: "",
+                        type: "post",
+                        success: function (cusorder) {
+                            resolve(cusorder);
+                        },
+                        error: function () {
+                            reject("请求2失败");
+                        }
+                    });
+
+                } else {
+                    reject("没有对应id!")
+                }
+
+            }));
+        })
+        .then((cusorder) => console.log(cusorder));
+
+</script>
