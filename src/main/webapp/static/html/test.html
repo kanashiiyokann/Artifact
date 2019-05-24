@@ -1,45 +1,62 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
+　　
 <head>
-    <title>test</title>
+    　　　　
+    <meta charset="UTF-8">
+    　　　　<title>divDrag</title>
+    　　
 </head>
-<body>
-
-</body>
-<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
-<script type="text/javascript">
-
-
-    function DataManager(callback) {
-
-        let defaults={
-            callback:function(subject,summary){
-                    console.log("accept all data !");
-                    console.log(subject, summary);
-            }
-        };
-        if(typeof callback==="function"){
-            defaults.callback=callback;
-        }
-
-        let subject = null, summary = null;
-        let $instance=this;
-        $instance.accept=function() {
-            if(subject!==null && summary!==null){
-                defaults.callback(subject,summary);
-            }
-        };
-
-        this.setSubject = function (data) {
-            subject = data;
-            $instance.accept(data);
-        };
-        this.setSummary = function (data) {
-            summary = data;
-            $instance.accept(data);
-        };
-
+　　　　
+<style type="text/css">
+    .cube {
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+        float: left;
+        margin: 5px 10px;
     }
 
-</script>
+    .cube > div {
+        background-color: cadetblue;
+        line-height: 24px;
+    }
+
+    　　　　</style>
+<body>
+　　　　
+<div id="container">
+</div>
+</body>
 </html>
+<script id="cube" type="text/html">
+    <div class="cube">
+        <div class="title"><span></span></div>
+
+    </div>
+
+</script>
+<script type="text/javascript">
+    let container = document.getElementById("container");
+    window.onload = function () {
+
+        let size = 10;
+        let template = document.getElementById("cube").innerHTML;
+        for (let i = 0; i < size; i++) {
+            container.innerHTML += template;
+        }
+
+        for (let i = 0; i < container.children.length; i++) {
+            container.children[i].getElementsByTagName("span")[0].innerText = i + 1;
+        }
+    }
+
+    container.addEventListener("mousedown", function (e) {
+        let clazz = e.target.className;
+        if (clazz === 'title') {
+
+        }
+        XMLHttp​Request
+        xhr = new XMLHttpRequest();
+    });
+</script>
