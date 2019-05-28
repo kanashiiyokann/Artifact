@@ -5,9 +5,12 @@ import artifact.modules.common.entity.Property;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
+import artifact.modules.user.entity.User;
+import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,8 +23,51 @@ public class ConsoleTest {
     private static Pattern p = Pattern.compile("\\S+");
 
     public static void main(String[] args) throws Exception {
-        test8();
+        test10();
     }
+
+    public static void test10() throws Exception {
+
+        String number = "2358649013";
+        int reduce = 3;
+
+        List<Integer> numberList = new ArrayList<>();
+        for (int i = 0; i < number.length(); i++) {
+            numberList.add(Integer.parseInt(number.substring(i, i + 1)));
+        }
+
+        int index = 0;
+        while (reduce > 0) {
+            doRemove(numberList, index++, reduce--);
+        }
+        StringBuilder sb = new StringBuilder();
+        numberList.forEach(i -> sb.append(i));
+
+        System.out.println(sb.toString());
+    }
+
+    public static void doRemove(List<Integer> list, int index, int range) {
+        int max = -1;
+        int cursor = index;
+        for (int i = index; i <= index + range; i++) {
+            if (list.get(i) > max) {
+                max = list.get(i);
+                cursor = i;
+            }
+        }
+        list.remove(cursor);
+
+    }
+
+    public static void test9() throws Exception {
+
+        User user = new User();
+        user.setType(UserType.admin);
+
+        System.out.println(user);
+
+    }
+
 
     public static void test8() throws Exception {
 
