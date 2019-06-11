@@ -19,7 +19,7 @@ public class UserService {
     private UserDao userDao;
 
     public void test() {
-        Map para = new HashMap<>();
+        Map para = new HashMap<>(3);
         para.put("age$lt", 30);
         para.put("age$gte", 18);
         para.put("state", 2);

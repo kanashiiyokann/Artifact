@@ -1,26 +1,25 @@
 package artifact;
 
-import artifact.modules.user.entity.User;
+import artifact.modules.common.service.BaseService;
+import artifact.modules.user.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class SpringTest {
-    @Resource
-    private MongoTemplate mongoTemplate;
+    @Autowired
+    BaseService baseService;
 
     @Test
     public void mongoTest() {
 
-
-        User user = mongoTemplate.findById(1L, User.class);
-        System.out.println(user);
+        UserService userService = baseService.getBean(UserService.class);
+        userService.test();
     }
 }
 
