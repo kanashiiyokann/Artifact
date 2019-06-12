@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+　　
+<head>
+    <meta charset="UTF-8">
+    　　　　<title>cacher</title>
+</head>
+<body>
+　　　
+</body>
+</html>
+<script type="module" src="../js/cacher.js"></script>
+<script type="text/javascript">
+
+    function test() {
+        window.$cacher.ajax({
+            url: "https://www.baidu.com",
+            success: function (data) {
+                console.log(data);
+            },
+            header: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Credentials": true,
+                "Access-Control-Allow-Methods": 'OPTIONS, GET, PUT, POST, DELETE',
+                "Access-Control-Allow-Headers": "x-requested-with,content-type"
+            },
+        });
+    }
+
+    window.onload = test;
+
+</script>
