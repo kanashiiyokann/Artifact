@@ -5,6 +5,8 @@ import artifact.modules.common.entity.Property;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
+import artifact.modules.initializer.AccountInitializer;
+import artifact.modules.initializer.SmallAccountInitializer;
 import artifact.modules.user.entity.User;
 import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
@@ -23,7 +25,13 @@ public class ConsoleTest {
     private static Pattern p = Pattern.compile("\\S+");
 
     public static void main(String[] args) throws Exception {
-        test10();
+        test11();
+    }
+
+    public static void test11() throws Exception {
+        AccountInitializer initializer = new SmallAccountInitializer();
+        initializer.init();
+
     }
 
     public static void test10() throws Exception {
