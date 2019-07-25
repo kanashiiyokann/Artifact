@@ -5,17 +5,12 @@ import artifact.modules.common.entity.Property;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
-import artifact.modules.initializer.AccountInitializer;
-import artifact.modules.initializer.SmallAccountInitializer;
 import artifact.modules.user.entity.User;
 import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,14 +19,40 @@ public class ConsoleTest {
 
     private static Pattern p = Pattern.compile("\\S+");
 
-    public static void main(String[] args) throws Exception {
-        test11();
+    /**
+     * 获取该期最后一天
+     *
+     * @param period
+     * @return
+     */
+    public static Date getLastDayOfPeriod(int period) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(period / 100, period % 100, 1);
+        calendar.add(Calendar.DAY_OF_YEAR, -1);
+
+        return calendar.getTime();
     }
 
-    public static void test11() throws Exception {
-        AccountInitializer initializer = new SmallAccountInitializer();
-        initializer.init();
 
+    public static void main(String[] args) throws Exception {
+        Date date = getLastDayOfPeriod(201907);
+        String str = new SimpleDateFormat("yyyy-MM-dd").format(date);
+        System.out.println(str);
+    }
+
+    public static void test() throws Exception {
+
+        Long number = null;
+        number = Optional.ofNullable(number).orElseGet(() -> {
+            System.out.println("excuted!");
+            return 456L;
+        });
+
+        number = Optional.ofNullable(number).orElseGet(() -> {
+            System.out.println("excuted!");
+            return 456L;
+        });
     }
 
     public static void test10() throws Exception {
