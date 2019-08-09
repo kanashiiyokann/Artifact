@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+</head>
+<body>
+<div>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <p>1</p>
+    <div id="head" style="height:80px;background-color: orange;width: 100%;"></div>
+    <div id="body" style="height:1800px;background-color: antiquewhite;">
+
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+        <p>1</p>
+    </div>
+</div>
+</body>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+    new Promise(function (resolve) {
+        let number = 24;
+        if (number % 5 === 0) {
+            resolve(number);
+        } else {
+            console.log(number + "不能被5整除！");
+        }
+    })
+        .then(function (data) {
+            new Promise(function (resolve) {
+                if (data % 3 === 0) {
+                    resolve(data);
+                } else {
+                    console.log(data + "不能被3整除！");
+                }
+            })
+                .then(function (data) {
+                    console.log(data + "既能被3整除也能被5整除！");
+                });
+        });
+
+</script>
+
+<script type="text/javascript">
+
+    $.fn.float = function (left, top) {
+        if (this.length === 0) return;
+
+        left = left || 0;
+        top = top || 0;
+        let instance=this[0];
+        instance._offset_top=instance.offsetTop;
+        instance._offset_left=instance.offsetLeft;
+
+        $(window).scroll(function(){
+
+            if(window.scrollY>instance._offset_top){
+                instance.style.position="fixed";
+                instance.style.top=top + "px";
+                instance.style.left= left + "px";
+            }else{
+                instance.style.position="relative";
+            }
+        });
+
+    }
+
+$("#head").float();
+
+
+
+</script>
+</html>
