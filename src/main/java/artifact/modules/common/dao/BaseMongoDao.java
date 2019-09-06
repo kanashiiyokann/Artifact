@@ -7,6 +7,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -39,6 +40,46 @@ public abstract class BaseMongoDao<T> {
             mongoTemplate.save(entity);
         }
     }
+
+    /**
+     * 批量插入
+     *
+     * @param list
+     * @return
+     */
+    public int insert(List<T> list) {
+        BulkOperations insertOpt = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, getGenericClass());
+        for (T t : list) {
+            insertOpt.insert(t);
+        }
+        return insertOpt.execute().getInsertedCount();
+
+    }
+
+
+    public int update(List<T> list) {
+        BulkOperations updateOpt = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, getGenericClass());
+        for (T t : list) {
+        //
+        }
+
+        return updateOpt.execute().getModifiedCount();
+    }
+
+
+//    /**
+//     * 批量插入
+//     * @param list
+//     * @return
+//     */
+//    public int insert(List<T> list,String collection) {
+//        BulkOperations insertOpt = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,collection);
+//        for (T t : list) {
+//            insertOpt.insert(t);
+//        }
+//        return insertOpt.execute().getInsertedCount();
+//
+//    }
 
     /**
      * 更新多个实体

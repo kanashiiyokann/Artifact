@@ -36,9 +36,13 @@ public class ConsoleTest {
 
 
     public static void main(String[] args) throws Exception {
-        Date date = getLastDayOfPeriod(201907);
-        String str = new SimpleDateFormat("yyyy-MM-dd").format(date);
+
+        Integer i=2;
+
+        String str=Optional.ofNullable(i).map(Object::toString).orElse("");
+
         System.out.println(str);
+
     }
 
     public static void test() throws Exception {
