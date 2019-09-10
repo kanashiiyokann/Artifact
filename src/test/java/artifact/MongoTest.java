@@ -33,14 +33,10 @@ public class MongoTest extends BaseController {
             userList.add(user);
         }
         long start = System.currentTimeMillis();
-        int count = userDao.insert(userList, "user1");
+        int count = userDao.insert(userList);
         long end = System.currentTimeMillis();
         System.out.println(String.format("%s record inserted,and took %s ms.", count, end - start));
 
-        start = System.currentTimeMillis();
-        userList.forEach(userDao::save);
-        end = System.currentTimeMillis();
-        System.out.println(String.format("%s record inserted,and took %s ms.", count, end - start));
     }
 
 }

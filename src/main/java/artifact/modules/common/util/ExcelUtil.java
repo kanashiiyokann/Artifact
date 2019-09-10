@@ -253,7 +253,7 @@ public class ExcelUtil {
 
     }
 
-    class Position {
+static    class Position {
         private Integer row;
         private Integer column;
 

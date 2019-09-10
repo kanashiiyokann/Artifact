@@ -1,6 +1,7 @@
 package artifact.modules.common.entity;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class BaseEntity {
     private Long id;
@@ -15,10 +16,10 @@ public class BaseEntity {
     }
 
     public Date getCreateTime() {
-        return createTime;
+        return Optional.ofNullable(createTime).map(d->(Date)d.clone()).orElse(null);
     }
 
     public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+        this.createTime = (Date)createTime.clone();
     }
 }

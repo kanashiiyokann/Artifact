@@ -27,7 +27,7 @@ public class Property extends HashMap<String, Object> {
             try {
                 ret = Integer.parseInt(String.valueOf(this.get(key)));
             } catch (Exception e) {
-                throw new RuntimeException(String.format("integer parse error！\r\nmessage:%s", e.getMessage()));
+                throw new RuntimeException(String.format("integer parse error！\r%nmessage:%s", e.getMessage()));
             }
         }
         return ret;
@@ -44,7 +44,7 @@ public class Property extends HashMap<String, Object> {
                 SimpleDateFormat sdf = new SimpleDateFormat(pattern);
                 ret = sdf.parse(String.valueOf(this.get(key)));
             } catch (Exception e) {
-                throw new RuntimeException(String.format("date parse error！\r\nmessage:%s", e.getMessage()));
+                throw new RuntimeException(String.format("date parse error！\r%nmessage:%s", e.getMessage()));
             }
         }
         return ret;

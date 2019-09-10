@@ -154,22 +154,21 @@ public abstract class ElasticSearchDaoImpl<T> {
         return ret;
     }
 
-    private QueryBuilder generateQuery(Map para) {
+    private QueryBuilder generateQuery(Map<Object,Object> para) {
         BoolQueryBuilder query = QueryBuilders.boolQuery();
-
+        para=Optional.ofNullable(para).orElse(new HashMap<>());
         Map<String, RangeQueryBuilder> rangeQueries = new HashMap<>(para.size());
 
-        if (para != null && para.size() > 0) {
             Matcher matcher;
             boolean flag;
-            for (Object obj : para.keySet()) {
-                String key = String.valueOf(obj).trim();
+            for (Map.Entry<Object,Object> entry : para.entrySet()) {
+                String key = String.valueOf(entry.getKey()).trim();
                 matcher = pattern_letter.matcher(key);
                 flag = matcher.find();
                 if (!flag) {
                     throw new RuntimeException("illegal feature name found !");
                 }
-                Object value = para.get(obj);
+                Object value = entry.getValue();
                 String name = matcher.group(0), type = "term";
                 if (matcher.find()) {
                     type = matcher.group(0);
@@ -191,7 +190,6 @@ public abstract class ElasticSearchDaoImpl<T> {
                     rangeQueries.put(name, rangeQuery);
                 }
             }
-        }
 
         for (RangeQueryBuilder rangeQuery : rangeQueries.values()) {
             query.must(rangeQuery);

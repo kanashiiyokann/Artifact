@@ -102,8 +102,8 @@ public abstract class BaseMongoDao<T> {
     public Long update(Map<String, Object> query, Map<String, Object> update) {
 
         Update udt = new Update();
-        for (String key : update.keySet()) {
-            udt.set(key, update.get(key));
+        for (Map.Entry<String,Object> entry : update.entrySet()) {
+            udt.set(entry.getKey(), entry.getValue());
         }
 
         Query qr = generateQuery(query);
@@ -127,7 +127,7 @@ public abstract class BaseMongoDao<T> {
         //过滤
         Query query = generateQuery(para);
         //分页
-        query.skip((index - 1) * size);
+        query.skip(Long.parseLong(String.valueOf(--index* size)));
         query.limit(size);
         //排序
         if (order != null && order.trim().length() > 1) {
@@ -243,7 +243,7 @@ public abstract class BaseMongoDao<T> {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").is(id));
         List<T> dataList = mongoTemplate.find(query, getGenericClass());
-        if (dataList == null && dataList.size() != 0) {
+        if (dataList.size() == 0) {
             throw new RuntimeException(String.format("no unique record found with id=%s !", id));
         }
         return dataList.get(0);
@@ -277,18 +277,16 @@ public abstract class BaseMongoDao<T> {
         if (para == null) {
             return query;
         }
-        if (para != null) {
-            for (String key : para.keySet()) {
-                Object val = para.get(key);
+            for (Map.Entry<String, Object> entry : para.entrySet()) {
+                Object val = entry.getValue();
                 //检查策略
                 if (val == null && strategy % 10 == 1) {
                     continue;
                 } else if (String.valueOf(val).trim().length() == 1 && strategy > 9) {
                     continue;
                 }
-                query.addCriteria(generateCriteria(key, val));
+                query.addCriteria(generateCriteria(entry.getKey(), val));
             }
-        }
         return query;
     }
 
@@ -343,8 +341,6 @@ public abstract class BaseMongoDao<T> {
         private String key;
         private Object value;
         private String method;
-        private String seperator = "$";
-        public List<Method> methods = new ArrayList<>();
 
         public Filter(String key, Object value) {
             String method = "is";

@@ -17,6 +17,12 @@ public class PropertyUtil {
             prop.load(in);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
