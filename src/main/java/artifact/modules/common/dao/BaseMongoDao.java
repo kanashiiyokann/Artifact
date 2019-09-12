@@ -31,17 +31,6 @@ public abstract class BaseMongoDao<T> {
 
 
     /**
-     * 保存多个实体
-     *
-     * @param entities
-     */
-    public void save(T... entities) {
-        for (T entity : entities) {
-            mongoTemplate.save(entity);
-        }
-    }
-
-    /**
      * 批量插入
      *
      * @param list
@@ -55,31 +44,6 @@ public abstract class BaseMongoDao<T> {
         return insertOpt.execute().getInsertedCount();
 
     }
-
-
-    public int update(List<T> list) {
-        BulkOperations updateOpt = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, getGenericClass());
-        for (T t : list) {
-        //
-        }
-
-        return updateOpt.execute().getModifiedCount();
-    }
-
-
-//    /**
-//     * 批量插入
-//     * @param list
-//     * @return
-//     */
-//    public int insert(List<T> list,String collection) {
-//        BulkOperations insertOpt = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED,collection);
-//        for (T t : list) {
-//            insertOpt.insert(t);
-//        }
-//        return insertOpt.execute().getInsertedCount();
-//
-//    }
 
     /**
      * 更新多个实体
@@ -102,7 +66,7 @@ public abstract class BaseMongoDao<T> {
     public Long update(Map<String, Object> query, Map<String, Object> update) {
 
         Update udt = new Update();
-        for (Map.Entry<String,Object> entry : update.entrySet()) {
+        for (Map.Entry<String, Object> entry : update.entrySet()) {
             udt.set(entry.getKey(), entry.getValue());
         }
 
@@ -127,7 +91,7 @@ public abstract class BaseMongoDao<T> {
         //过滤
         Query query = generateQuery(para);
         //分页
-        query.skip(Long.parseLong(String.valueOf(--index* size)));
+        query.skip(Long.parseLong(String.valueOf(--index * size)));
         query.limit(size);
         //排序
         if (order != null && order.trim().length() > 1) {
@@ -176,45 +140,12 @@ public abstract class BaseMongoDao<T> {
 
 
     /**
-     * 执行原生查询
-     *
-     * @param queryTemplate
-     * @param args
-     * @return
-     * @throws Exception
-     */
-    public List<Map> excuteQuery(String queryTemplate, Object... args) {
-        if (args != null && args.length > 0) {
-            queryTemplate = String.format(queryTemplate, args);
-        }
-        List<Map> ret = null;
-        BasicDBObject query = new BasicDBObject();
-        query.put("$eval", queryTemplate);
-        Document result = mongoTemplate.getDb().runCommand(query);
-        Object obj = result.get("retval");
-        if (obj instanceof BasicDBObject) {
-            obj = ((BasicDBObject) obj).get("_batch");
-            if (obj instanceof BasicDBList) {
-                ret = (List<Map>) obj;
-            }
-        } else {
-            Map map = new HashMap<>(1);
-
-            map.put("ret", obj);
-            ret = new ArrayList<>(1);
-            ret.add(map);
-
-        }
-        return ret;
-    }
-
-    /**
      * 删除实体[数组]
      *
      * @param ids 实体ID或数组
      */
     public Long delete(Long... ids) {
-        Map para = new HashMap(1);
+        Map<String, Object> para = new HashMap<>(1);
         para.put("id$in", ids);
 
         return this.delete(para);
@@ -258,9 +189,7 @@ public abstract class BaseMongoDao<T> {
     public List<T> find(Long... ids) {
         Query query = new Query();
         query.addCriteria(Criteria.where("id").in(ids));
-        List<T> dataList = mongoTemplate.find(query, getGenericClass());
-
-        return dataList;
+        return mongoTemplate.find(query, getGenericClass());
     }
 
     /**
@@ -277,16 +206,16 @@ public abstract class BaseMongoDao<T> {
         if (para == null) {
             return query;
         }
-            for (Map.Entry<String, Object> entry : para.entrySet()) {
-                Object val = entry.getValue();
-                //检查策略
-                if (val == null && strategy % 10 == 1) {
-                    continue;
-                } else if (String.valueOf(val).trim().length() == 1 && strategy > 9) {
-                    continue;
-                }
-                query.addCriteria(generateCriteria(entry.getKey(), val));
+        for (Map.Entry<String, Object> entry : para.entrySet()) {
+            Object val = entry.getValue();
+            //检查策略
+            if (val == null && strategy % 10 == 1) {
+                continue;
+            } else if (String.valueOf(val).trim().length() == 1 && strategy > 9) {
+                continue;
             }
+            query.addCriteria(generateCriteria(entry.getKey(), val));
+        }
         return query;
     }
 
@@ -294,8 +223,7 @@ public abstract class BaseMongoDao<T> {
 
         if (strategy == Strategy.NO_IGNORE) return false;
         if (value == null && strategy % 10 == 1) return true;
-        if (isEmpty(value) && strategy / 10 == 1) return true;
-        return false;
+        return (isEmpty(value) && strategy / 10 == 1);
     }
 
     private static boolean isEmpty(Object value) {
@@ -398,10 +326,10 @@ public abstract class BaseMongoDao<T> {
      * @author zyw
      */
     private Criteria generateCriteria(String key, Object value) {
-        String seperator = "$";
+        String separeter = "$";
         String methodName = "is";
 
-        if (key.indexOf(seperator) > -1) {
+        if (key.indexOf(separeter) > -1) {
             String[] arr = key.split(":");
             methodName = arr[1];
             key = arr[0];
@@ -461,7 +389,7 @@ public abstract class BaseMongoDao<T> {
      *
      * @return
      */
-    private Class getGenericClass() {
+    private Class<T> getGenericClass() {
         Type type = this.getClass().getGenericSuperclass();
         type = ((ParameterizedType) type).getActualTypeArguments()[0];
         return (Class<T>) type;
