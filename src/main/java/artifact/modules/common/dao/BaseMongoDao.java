@@ -329,13 +329,12 @@ public abstract class BaseMongoDao<T> {
         String separeter = "$";
         String methodName = "is";
 
-        if (key.indexOf(separeter) > -1) {
+        if (key.contains(separeter)) {
             String[] arr = key.split(":");
             methodName = arr[1];
             key = arr[0];
         }
         Criteria criteria = Criteria.where(key);
-
 
         if (methodName.equals("regex")) {
             criteria.regex(String.valueOf(value));
@@ -392,6 +391,7 @@ public abstract class BaseMongoDao<T> {
     private Class<T> getGenericClass() {
         Type type = this.getClass().getGenericSuperclass();
         type = ((ParameterizedType) type).getActualTypeArguments()[0];
+
         return (Class<T>) type;
     }
 

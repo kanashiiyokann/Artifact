@@ -37,11 +37,11 @@ public class ConsoleTest {
 
     public static void main(String[] args) throws Exception {
 
-        Integer i=2;
-
-        String str=Optional.ofNullable(i).map(Object::toString).orElse("");
-
-        System.out.println(str);
+        Date date = new Date();
+        date.setTime(675385200000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        System.out.println(sdf.format(date));
 
     }
 

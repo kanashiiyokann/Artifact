@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+　　
+<head>
+    <meta charset="UTF-8">
+    　　　　<title>advanced java script</title>
+</head>
+　　　　
+<body>
+　　　　
+<div id="container">
+</div>
+</body>
+</html>
+<script id="cube" type="text/html">
+    <div class="cube">
+        <div class="title"><span></span></div>
+
+    </div>
+
+</script>
+<script type="text/javascript">
+    let arr1,arr2,arr3,number,flag,str,obj1,obj2;
+    //对象属性赋值 Object.assign()
+    obj1={name:'tom',age:12};
+    obj2={age:12,tall:1.76};
+    obj2=Object.assign(obj1,obj2);
+    console.log(obj2===obj1);
+    console.log(obj1);
+
+    // 展开(spread)操作符...
+     arr1 = [1, 3, 5];
+     arr2 = [...arr1, 7, 9];
+     arr3 = [...arr1];
+    console.log(arr1, arr2, arr3);
+
+    obj1={name:'jerry'};obj2={age:12};
+    obj2={...obj2,...obj1};
+    console.log(obj2);
+
+    //Array.find()
+     number = arr3.find((e) => e % 3 === 0);
+    console.log(number);
+
+    //Array.includes()
+    console.log(arr2.includes(9));
+
+    //Array.filter()
+    arr1 = arr2.filter((e) => e % 3 === 0);
+    console.log(arr1);
+
+    //双取反运算
+    flag= ~~4.9===Math.floor(4.9);
+   console.log(flag);
+
+   //数学指数幂函数
+    flag=Math.pow(2,3)===2**3;
+    console.log(flag);
+
+    //将字符串转换为数字
+    str='8.5';
+    console.log(+'10',+str);
+
+</script>
