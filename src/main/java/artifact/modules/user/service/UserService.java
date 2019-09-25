@@ -34,4 +34,8 @@ public class UserService {
         System.out.println(users);
 
     }
+
+    public User findById(Long id){
+        return userDao.find(id);
+    }
 }

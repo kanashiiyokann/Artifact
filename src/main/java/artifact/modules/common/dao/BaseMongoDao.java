@@ -171,13 +171,11 @@ public abstract class BaseMongoDao<T> {
      * @param id 实体的主键ID
      */
     public T find(Long id) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("id").is(id));
-        List<T> dataList = mongoTemplate.find(query, getGenericClass());
-        if (dataList.size() == 0) {
+        T ret = mongoTemplate.findById(id, getGenericClass());
+        if (ret == null) {
             throw new RuntimeException(String.format("no unique record found with id=%s !", id));
         }
-        return dataList.get(0);
+        return ret;
     }
 
     /**

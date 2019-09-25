@@ -29,20 +29,25 @@ public class ConsoleTest {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(period / 100, period % 100, 1);
-        calendar.add(Calendar.DAY_OF_YEAR, -1);
+        calendar.add(Calendar.DATE, -1);
 
         return calendar.getTime();
     }
 
 
     public static void main(String[] args) throws Exception {
-
-        Date date = new Date();
-        date.setTime(675385200000L);
+        int INT_START=201701,INT_END=201912;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-        System.out.println(sdf.format(date));
+        for(int i=INT_START;i<=INT_END;i++) {
+            if(i%100>12){
+                i+=88;
+            }
 
+            Date date = getLastDayOfPeriod(i);
+
+            System.out.println(sdf.format(date));
+
+        }
     }
 
     public static void test() throws Exception {
