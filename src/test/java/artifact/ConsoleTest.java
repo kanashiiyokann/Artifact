@@ -9,10 +9,14 @@ import artifact.modules.user.entity.User;
 import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
 
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 public class ConsoleTest {
@@ -36,18 +40,14 @@ public class ConsoleTest {
 
 
     public static void main(String[] args) throws Exception {
-        int INT_START=201701,INT_END=201912;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for(int i=INT_START;i<=INT_END;i++) {
-            if(i%100>12){
-                i+=88;
-            }
 
-            Date date = getLastDayOfPeriod(i);
+        DecimalFormat df=new DecimalFormat("###\0###\0##0.00");
+        BigDecimal bigDecimal=new BigDecimal("1204616.5");
+        System.out.println(df.format(bigDecimal));
+        System.out.println("1\b1\n1\0 ");
 
-            System.out.println(sdf.format(date));
 
-        }
+
     }
 
     public static void test() throws Exception {
@@ -57,7 +57,7 @@ public class ConsoleTest {
             System.out.println("excuted!");
             return 456L;
         });
-
+        //  Objects.
         number = Optional.ofNullable(number).orElseGet(() -> {
             System.out.println("excuted!");
             return 456L;

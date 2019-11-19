@@ -9,54 +9,45 @@
 </head>
 　　　　
 <style type="text/css">
-    .cube {
-        width: 100px;
-        height: 100px;
-        background-color: #ccc;
-        float: left;
-        margin: 5px 10px;
+ul{
+    width: 240px;
+}
+    ul label {
+        position: absolute;
+    }
+    ul li{
+        list-style: none;
     }
 
-    .cube > div {
-        background-color: cadetblue;
-        line-height: 24px;
+    ul div {
+        position: relative;
+        display: inline-block;
+        margin-left: 80px;
     }
-
-    　　　　</style>
+</style>
 <body>
 　　　　
-<div id="container">
+<div id="body">
+    <ul>
+        <li>
+            <label>银行：</label><div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
+        </li>
+        <li>
+            <label>银行：</label><div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
+        </li>
+        <li>
+            <label>银行：</label><div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
+        </li>
+    </ul>
 </div>
+</div>
+
 </body>
 </html>
-<script id="cube" type="text/html">
-    <div class="cube">
-        <div class="title"><span></span></div>
-
-    </div>
-
-</script>
+<script type="text/javascript" src="../js/icing.js"></script>
 <script type="text/javascript">
-    let container = document.getElementById("container");
-    window.onload = function () {
+    let book = {name: "hello java", author: {name: "tom", age: 18, sex: "male"}};
+    window._icing_book=    new Icing(book);
 
-        let size = 10;
-        let template = document.getElementById("cube").innerHTML;
-        for (let i = 0; i < size; i++) {
-            container.innerHTML += template;
-        }
-
-        for (let i = 0; i < container.children.length; i++) {
-            container.children[i].getElementsByTagName("span")[0].innerText = i + 1;
-        }
-    }
-
-    container.addEventListener("mousedown", function (e) {
-        let clazz = e.target.className;
-        if (clazz === 'title') {
-
-        }
-        XMLHttp​Request
-        xhr = new XMLHttpRequest();
-    });
+    console.log(window._icing_book.strip("author.name"));
 </script>

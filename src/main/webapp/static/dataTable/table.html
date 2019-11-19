@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="jquery.dataTables.min.css">
+    <style type="text/css">
+        body {
+            position: relative;
+        }
+
+        .body {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 1400px;
+        }
+    </style>
+</head>
+<body>
+<div class="body">
+    <table id="myTable" class="stripe" style="width:100%">
+        <thead>
+        <tr>
+            <th rowspan="2">no</th>
+            <th rowspan="2">type</th>
+            <th rowspan="2">summary</th>
+            <th colspan="3">journals</th>
+        </tr>
+        <tr>
+            <th>subject</th>
+            <th>direct</th>
+            <th>type</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</body>
+</html>
+<script type="text/javascript" src="jquery-3.3.1.js"></script>
+<script type="text/javascript" src="jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        let json = '[{"_id":7841528158886613054,"sort":100.0,"type":"增值税专用发票（收入）","summary":"收入","journals":[{"_id":7841528158882418688,"subjectId":7809232016982851693,"subjectName":"1122 应收账款","direct":1,"type":"合计金额"},{"_id":7841528158882418689,"subjectId":7809232016987045900,"subjectName":"5001 主营业务收入","direct":2,"type":"金额"},{"_id":7841528158882418690,"subjectId":7809232016982851741,"subjectName":"22210106 应交税费_应交增值税_销项税额","direct":2,"type":"税额"}]},{"_id":7841528158886613055,"sort":300,"type":"增值税普通发票（收入）","summary":"收入","journals":[{"_id":7841528158886612992,"subjectId":7809232016982851693,"subjectName":"1122 应收账款","direct":1,"type":"合计金额"},{"_id":7841528158886612993,"subjectId":7809232016987045900,"subjectName":"5001 主营业务收入","direct":2,"type":"金额"},{"_id":7841528158886612994,"subjectId":7809232016982851741,"subjectName":"22210106 应交税费_应交增值税_销项税额","direct":2,"type":"税额"}]},{"_id":7841528158886613056,"sort":400,"type":"增值税电子发票（收入）","summary":"收入","journals":[{"_id":7841528158886612995,"subjectId":7809232016982851693,"subjectName":"1122 应收账款","direct":1,"type":"合计金额"},{"_id":7841528158886612996,"subjectId":7809232016987045900,"subjectName":"5001 主营业务收入","direct":2,"type":"金额"},{"_id":7841528158886612997,"subjectId":7809232016982851741,"subjectName":"22210106 应交税费_应交增值税_销项税额","direct":2,"type":"税额"}]},{"_id":7841528158886613057,"sort":500,"type":"增值税专用发票（成本）","summary":"购进商品","journals":[{"_id":7841528158886612998,"subjectId":7809232016982851703,"subjectName":"1405 库存商品","direct":1,"type":"金额"},{"_id":7841528158886612999,"subjectId":7809232016982851736,"subjectName":"22210101 应交税费_应交增值税_进项税额","direct":1,"type":"税额"},{"_id":7841528158886613000,"subjectId":7809232016982851731,"subjectName":"2202 应付账款","direct":2,"type":"合计金额"}]},{"_id":7841528158886613058,"sort":600,"type":"增值税普通发票（成本）","summary":"购进商品","journals":[{"_id":7841528158886613001,"subjectId":7809232016982851703,"subjectName":"1405 库存商品","direct":1,"type":"金额"},{"_id":7841528158886613002,"subjectId":7809232016982851731,"subjectName":"2202 应付账款","direct":2,"type":"金额"}]},{"_id":7841528158886613059,"sort":700,"type":"服务成本（专票）","summary":"服务成本","journals":[{"_id":7841528158886613003,"subjectId":7809232016987045909,"subjectName":"5401 主营业务成本","direct":1,"type":"金额"},{"_id":7841528158886613004,"subjectId":7809232016982851736,"subjectName":"22210101 应交税费_应交增值税_进项税额","direct":1,"type":"税额"},{"_id":7841528158886613005,"subjectId":7809232016982851731,"subjectName":"2202 应付账款","direct":2,"type":"合计金额"}]},{"_id":7841528158886613060,"sort":800,"type":"增值税费用专票","summary":"费用","journals":[{"_id":7841528158886613006,"subjectId":7809232016987045920,"subjectName":"5602 管理费用","direct":1,"type":"金额"},{"_id":7841528158886613007,"subjectId":7809232016982851736,"subjectName":"22210101 应交税费_应交增值税_进项税额","direct":1,"type":"税额"},{"_id":7841528158886613008,"subjectId":7809232016982851760,"subjectName":"2241 其他应付款","direct":2,"type":"合计金额"}]},{"_id":7841528158886613061,"sort":900,"type":"购进固定资产（专票）","summary":"购进固定资产","journals":[{"_id":7841528158886613009,"subjectId":7809232016982851714,"subjectName":"1601 固定资产","direct":1,"type":"金额"},{"_id":7841528158886613010,"subjectId":7809232016982851736,"subjectName":"22210101 应交税费_应交增值税_进项税额","direct":1,"type":"税额"},{"_id":7841528158886613011,"subjectId":7809232016982851683,"subjectName":"1001 库存现金","direct":2,"type":"合计金额"}]},{"_id":7841528158886613062,"sort":1000,"type":"缴税回单","summary":"缴税","journals":[{"_id":7841528158886613012,"subjectId":7809232016982851745,"subjectName":"222102 应交税费_未交增值税","direct":1,"type":"增值税"},{"_id":7841528158886613013,"subjectId":7809232016982851751,"subjectName":"222108 应交税费_应交城市维护建设税","direct":1,"type":"城建税"},{"_id":7841528158886613014,"subjectId":7809232016982851756,"subjectName":"222113 应交税费_教育费附加","direct":1,"type":"教育费附加"},{"_id":7841528158886613015,"subjectId":7809232016982851757,"subjectName":"222114 应交税费_地方教育费附加","direct":1,"type":"地方教育费附加"},{"_id":7841528158886613016,"subjectId":7809232016982851749,"subjectName":"222106 应交税费_应交所得税","direct":1,"type":"企业所得税"},{"_id":7841528158886613017,"subjectId":7809232016982851755,"subjectName":"222112 应交税费_应交个人所得税","direct":1,"type":"个人所得税"},{"_id":7841528158886613018,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":2,"type":"合计金额"}]},{"_id":7841528158886613063,"sort":1100,"type":"银行收款回单（公司）","summary":"本月银行收款","journals":[{"_id":7841528158886613019,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":1,"type":"金额"},{"_id":7841528158886613020,"subjectId":7809232016982851693,"subjectName":"1122 应收账款","direct":2,"type":"金额"}]},{"_id":7841528158886613064,"sort":1200,"type":"银行收款回单（个人）","summary":"本月银行收款","journals":[{"_id":7841528158886613021,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":1,"type":"金额"},{"_id":7841528158886613022,"subjectId":7809232016982851697,"subjectName":"1221 其他应收款","direct":2,"type":"金额"}]},{"_id":7841528158886613065,"sort":1300,"type":"存现","summary":"存现","journals":[{"_id":7841528158886613023,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":1,"type":"金额"},{"_id":7841528158886613024,"subjectId":7809232016982851683,"subjectName":"1001 库存现金","direct":2,"type":"金额"}]},{"_id":7841528158886613066,"sort":1400,"type":"购进固定资产","summary":"购进固定资产","journals":[{"_id":7841528158886613025,"subjectId":7809232016982851714,"subjectName":"1601 固定资产","direct":1,"type":"金额"},{"_id":7841528158886613026,"subjectId":7809232016982851683,"subjectName":"1001 库存现金","direct":2,"type":"金额"}]},{"_id":7841528158886613067,"sort":1500,"type":"银行付款回单（公司）","summary":"本月银行付款","journals":[{"_id":7841528158886613027,"subjectId":7809232016982851731,"subjectName":"2202 应付账款","direct":1,"type":"金额"},{"_id":7841528158886613028,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":2,"type":"金额"}]},{"_id":7841528158886613068,"sort":1600,"type":"银行付款回单（个人）","summary":"支付个人款项","journals":[{"_id":7841528158886613029,"subjectId":7809232016982851760,"subjectName":"2241 其他应付款","direct":1,"type":"金额"},{"_id":7841528158886613030,"subjectId":7809232016982851684,"subjectName":"1002 银行存款","direct":2,"type":"金额"}]},{"_id":7841528158886613069,"sort":1700,"type":"取现","summary":"提取备用金","journals":[{"_id":7841528158886613031,"subjectId":7809232016982851683,"subjectName":"1001 库存现金","direct":1,"type":"金额"},{"_id":7841528158886613032,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":2,"type":"金额"}]},{"_id":7841528158886613070,"sort":1800,"type":"银行利息回单","summary":"收到银行利息","journals":[{"_id":7841528158886613033,"subjectId":7809232016982851684,"subjectName":"1002 银行存款","direct":1,"type":"金额"},{"_id":7841528158886613034,"subjectId":7809232016987045941,"subjectName":"560302 财务费用_利息","direct":1,"type":"金额"}]},{"_id":7841528158886613071,"sort":1900,"type":"银行手续费回单","summary":"支付银行手续费","journals":[{"_id":7841528158886613035,"subjectId":7809232016987045942,"subjectName":"560303 财务费用_手续费","direct":1,"type":"金额"},{"_id":7841528158886613036,"subjectId":7809232016982851685,"subjectName":"100201 银行存款_基本户","direct":2,"type":"金额"}]},{"_id":7841528158886613072,"sort":2000,"type":"购买社保","summary":"交纳社保","journals":[{"_id":7841528158886613037,"subjectId":7809232016987045935,"subjectName":"560215 管理费用_社保","direct":1,"type":"公司社保"},{"_id":7841528158886613038,"subjectId":7809232016982851698,"subjectName":"122101 其他应收款_个人社保","direct":1,"type":"个人社保"},{"_id":7841528158886613039,"subjectId":7809232016982851683,"subjectName":"1001 库存现金","direct":2,"type":"合计金额"}]},{"_id":7841528158886613073,"sort":2100,"type":"购买公积金","summary":"购买公积金","journals":[{"_id":7841528158886613040,"subjectId":7809232016987045920,"subjectName":"5602 管理费用","direct":1,"type":"公司公积金"},{"_id":7841528158886613041,"subjectId":7809232016982851697,"subjectName":"1221 其他应收款","direct":1,"type":"个人公积金"},{"_id":7841528158886613042,"subjectId":7809232016982851684,"subjectName":"1002 银行存款","direct":2,"type":"合计金额"}]}]';
+        let templateList = JSON.parse(json);
+        let array = [];
+        let directMap = {1: '借', 2: '贷'};
+
+    });
+
+
+</script>
+<script type="text/javascript">
+    (function($){
+        $.fn.table=function(options){
+
+        }
+
+
+    })(jQuery);
+</script>
