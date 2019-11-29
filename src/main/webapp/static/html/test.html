@@ -2,56 +2,29 @@
 <html lang="en">
 　　
 <head>
-    　　　　
     <meta charset="UTF-8">
     　　　　<title>divDrag</title>
-    　　
 </head>
-　　　　
 <style type="text/css">
-    ul {
-        width: 240px;
-    }
-
-    ul label {
-        position: absolute;
-    }
-
-    ul li {
-        list-style: none;
-    }
-
-    ul div {
-        position: relative;
+    .circle {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        background-color: #cccccc;
+        color: #152033;
         display: inline-block;
-        margin-left: 80px;
+        line-height: 50px;
+        text-align: center;
     }
-</style>
-<body>
-　　　　
-<div id="body">
-    <ul>
-        <li>
-            <label>银行：</label>
-            <div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
-        </li>
-        <li>
-            <label>银行：</label>
-            <div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
-        </li>
-        <li>
-            <label>银行：</label>
-            <div>中国建设银行股份有限公司成都航空路支行 51001895236052507484</div>
-        </li>
-    </ul>
-</div>
-</div>
+    .circle:hover{
+        background-color: #377dcc;
+        color: white;
+    }
 
+</style>
+<body style="user-select: none;">
+　　　　
+<div class="circle">4
+</div>
 </body>
 </html>
-<script type="text/javascript" src="../js/icing.js"></script>
-<script type="text/javascript">
-    window.book = {name: "hello java", author: {name: "tom", age: 18, sex: "male"}};
-
-    console.log(window.book.$strip("author.name"));
-</script>

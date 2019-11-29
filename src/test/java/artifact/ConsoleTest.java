@@ -8,11 +8,23 @@ import artifact.modules.common.util.ExcelUtil.Style;
 import artifact.modules.user.entity.User;
 import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,30 +35,48 @@ public class ConsoleTest {
 
     private static Pattern p = Pattern.compile("\\S+");
 
-    /**
-     * 获取该期最后一天
-     *
-     * @param period
-     * @return
-     */
-    public static Date getLastDayOfPeriod(int period) {
+    public static void excelTest() throws Exception {
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(period / 100, period % 100, 1);
-        calendar.add(Calendar.DATE, -1);
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet();
+        HSSFRow row = sheet.createRow(0);
 
-        return calendar.getTime();
+        HSSFCell cell = row.createCell(0);
+        cell.setCellValue("test");
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER);
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
+        cell.setCellStyle(style);
+        CellRangeAddress range = new CellRangeAddress(0, 3, 0, 3);
+        sheet.addMergedRegion(range);
+
+        File file = new File("C:\\Users\\DGG-S27-D-20\\Desktop\\test\\text.xls");
+
+        FileOutputStream outputStream = new FileOutputStream(file);
+
+        wb.write(outputStream);
+
+        outputStream.close();
+
     }
 
 
     public static void main(String[] args) throws Exception {
 
-        DecimalFormat df=new DecimalFormat("###\0###\0##0.00");
-        BigDecimal bigDecimal=new BigDecimal("1204616.5");
-        System.out.println(df.format(bigDecimal));
-        System.out.println("1\b1\n1\0 ");
+//
+//        String dateStr = "2019-07-01";
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//
+//        Long timestamp = sdf.parse(dateStr).getTime();
+//
+//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDate date = LocalDate.parse(dateStr, dtf);
+//        LocalDateTime dateTime=LocalDateTime.of(date, LocalTime.MIN);
+//
+//        Long ts = dateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
 
-
+        System.out.println(new Date().getTime());
+        System.out.println(LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli());
 
     }
 

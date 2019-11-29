@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ElasticsearchTest {
         item.setId(5L);
         item.setName("head-cha-la");
         item.setNote("this is a lyric");
-        item.setCreateTime(new Date());
+        item.setCreateTime(LocalDateTime.now());
 
         itemService.save(item);
 

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+　　
+<head>
+    <meta charset="UTF-8">
+    　　　　<title>divDrag</title>
+</head>
+<style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .searchBar {
+        border: 1px solid #b6b6b6;
+        width: 539px;
+        height: 34px;
+        padding: 0 12px 0 1px;
+        margin: 0 auto;
+        display: inline-block;
+    }
+
+    .searchBar-focus {
+        border-color: #0d82b6 !important;
+    }
+
+    .searchBar:hover {
+        border-color: #676767;
+    }
+
+    .searchBar input {
+        width: inherit;
+        height: 22px;
+        margin: 6px 0 0 7px;
+        border: none;
+        outline: none;
+        background-color: transparent;
+        font: 16px/18px arial;
+    }
+
+    #quickLink {
+        text-align: left;
+        list-style: none;
+        float: left;
+        display: inline-block;
+    }
+
+    #quickLink li {
+        display: inline-block;
+        margin: 2px 12px;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    a{
+        text-decoration: none;
+    }
+</style>
+<body>
+<div style="padding-top: 180px;">
+    <div class="searchBar" id="searchBar"><input type="text"></div>
+</div>
+<div style="padding-top: 80px;width: 1200px;margin: 0 auto;">
+    <ul id="quickLink"></ul>
+</div>
+</body>
+</html>
+
+
+
+
+<script type="text/javascript">
+
+    window._urlList = [
+        {name: 'webSite1', url: 'https://www.baidu.com'},
+        {name: 'webSite1', url: 'https://www.baidu.com'},
+        {name: 'webSite1', url: 'https://www.baidu.com'},
+        {name: 'webSite1', url: 'https://www.baidu.com'}
+    ];
+
+
+    window.onload = function () {
+
+        let $searchBar = document.getElementById("searchBar");
+
+        let $input = $searchBar.firstChild;
+        $input.addEventListener("focus", function () {
+            $searchBar.classList.add("searchBar-focus");
+        });
+        $input.addEventListener("blur", function () {
+            $searchBar.classList.remove("searchBar-focus");
+        });
+
+        $input.addEventListener("keypress", function (event) {
+            if ("Enter" === event.key) {
+                //   window.open('https://wwww.baidu.com/s?wd=' +$input.value);
+                document.location.href = 'https://wwww.baidu.com/s?wd=' + $input.value;
+            }
+        });
+
+        let $ul = document.getElementById("quickLink");
+        window._urlList.forEach(e => {
+            let htm = '<li><a href="'+e["url"]+'" title="'+e["name"]+'" target="_blank">' + e["name"] + '</a></li>';
+            $ul.innerHTML += htm;
+
+        })
+
+    }
+
+
+</script>

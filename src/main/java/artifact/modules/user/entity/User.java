@@ -4,6 +4,8 @@ import artifact.modules.common.entity.BaseEntity;
 import artifact.modules.user.constant.UserState;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+
 @Document(collection = "user")
 public class User extends BaseEntity implements UserState {
     private String name;
