@@ -1,6 +1,7 @@
 package artifact;
 
 
+import artifact.modules.common.entity.LogType;
 import artifact.modules.common.entity.Property;
 import artifact.modules.common.util.Excel2PdfUtil;
 import artifact.modules.common.util.ExcelUtil;
@@ -62,21 +63,7 @@ public class ConsoleTest {
 
 
     public static void main(String[] args) throws Exception {
-
-//
-//        String dateStr = "2019-07-01";
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//
-//        Long timestamp = sdf.parse(dateStr).getTime();
-//
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate date = LocalDate.parse(dateStr, dtf);
-//        LocalDateTime dateTime=LocalDateTime.of(date, LocalTime.MIN);
-//
-//        Long ts = dateTime.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-
-        System.out.println(new Date().getTime());
-        System.out.println(LocalDateTime.now().toInstant(ZoneOffset.of("+8")).toEpochMilli());
+      test10(1,2,3);
 
     }
 
@@ -94,24 +81,13 @@ public class ConsoleTest {
         });
     }
 
-    public static void test10() throws Exception {
+    public static void test10(Object... args) throws Exception {
 
-        String number = "2358649013";
-        int reduce = 3;
+        String temp="_%s_%s_%s_%s_%s_";
+        int len=temp.concat("%s").length()-1-args.length;
 
-        List<Integer> numberList = new ArrayList<>();
-        for (int i = 0; i < number.length(); i++) {
-            numberList.add(Integer.parseInt(number.substring(i, i + 1)));
-        }
+      System.out.println( String.format(temp,args));
 
-        int index = 0;
-        while (reduce > 0) {
-            doRemove(numberList, index++, reduce--);
-        }
-        StringBuilder sb = new StringBuilder();
-        numberList.forEach(i -> sb.append(i));
-
-        System.out.println(sb.toString());
     }
 
     public static void doRemove(List<Integer> list, int index, int range) {

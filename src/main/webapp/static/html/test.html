@@ -3,28 +3,70 @@
 　　
 <head>
     <meta charset="UTF-8">
-    　　　　<title>divDrag</title>
+    　　　　<title>test</title>
 </head>
 <style type="text/css">
-    .circle {
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        background-color: #cccccc;
-        color: #152033;
-        display: inline-block;
-        line-height: 50px;
-        text-align: center;
-    }
-    .circle:hover{
-        background-color: #377dcc;
-        color: white;
+    .content {
+        white-space: nowrap;
+        width: 100%;
+        overflow: scroll;
     }
 
+
+    .item {
+        display: inline-block;
+        padding: 0 4px;
+    }
 </style>
-<body style="user-select: none;">
-　　　　
-<div class="circle">4
-</div>
+<body>
+<table id="myTable">
+
+</table>
+
 </body>
 </html>
+<script src="../js/jquery-3.3.1.js" type="text/javascript" charset="utf-8"></script>
+<script src="../js/ext.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
+    let arr = [{
+        "type": "增值税专用发票（收入）",
+        "summary": "收入",
+        "journals": [
+            {
+                "subjectName": "1122 应收账款",
+                "direct": 1,
+                "type": "合计金额"
+            },
+            {
+                "subjectName": "5001 主营业务收入",
+                "direct": 2,
+                "type": "金额"
+            },
+            {
+                "subjectName": "22210106 应交税费_应交增值税_销项税额",
+                "direct": 2,
+                "type": "税额"
+            }
+        ]
+    },
+        {
+            "type": "增值税专用发票（收入）",
+            "summary": "收入",
+            "journals": [
+            ]
+        }
+    ];
+
+    let mapper=[
+        {title:'摘要',data:'summary'},
+        {title:'类型',data:'type'},
+        {title:'摘要',data:'summary'},
+        {title:'科目名称',data:'journals:subjectName'},
+        {title:'方向',data:'journals:direct'},
+        {title:'金额类型',data:'journals:type'}
+    ];
+
+
+    let theTable=Table.of("#myTable").map(mapper).load(arr);
+</script>
