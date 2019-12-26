@@ -67,7 +67,7 @@ class Table{
         this.setting={default:{}};
         this.setting.default.value="";
         let $this=this;
-        this.setting.default.render=function(data,object){
+        this.setting.default.render=function(data){
             return data||$this.setting.default.value;
         };
     }
@@ -97,14 +97,16 @@ class Table{
         let $tbody=this.$instance.find("tbody");
         $tbody.html('');
 
-        data.forEach(function(row,index,table){
-            $this._digestData(row);
+        data.forEach(function(row,rowIndex,table){
+            $this._digestData(row,rowIndex);
         });
 
 
     }
 
-    _digestData(object){
+    _digestData(object,rowIndex){
+        let rawData=object;
+        object=JSON.parse(JSON.stringify(rawData));
         let $this=this;
         let $tbody=this.$instance.find("tbody");
             object=Icing.of(object);
@@ -127,13 +129,13 @@ class Table{
                 data=object.strip(name);
             }
             let render=column['render']||$this.setting.default.render;
-            data=render(data,object.obj);
+            data=render(data,rowIndex,object.obj);
             htm+=(data+'</td>');
         });
         htm+='</tr>';
         $tbody.append(htm);
         let $tr=$tbody.find("tr:last");
-        $tr.prop("data-row",object.obj);
+        $tr.prop("data-row",rawData);
         //补足
      let extra=  this.mapper.filter(e=>e["data"].indexOf(":")>-1);
 

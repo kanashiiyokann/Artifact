@@ -30,6 +30,7 @@
 <script type="text/javascript">
 
     let arr = [{
+        id: 1,
         "type": "增值税专用发票（收入）",
         "summary": "收入",
         "journals": [
@@ -51,22 +52,47 @@
         ]
     },
         {
+            id: 2,
             "type": "增值税专用发票（收入）",
             "summary": "收入",
             "journals": [
+                {
+                    "subjectName": "1122 应收账款",
+                    "direct": 1,
+                    "type": "合计金额"
+                },
+                {
+                    "subjectName": "5001 主营业务收入",
+                    "direct": 2,
+                    "type": "金额"
+                }
             ]
         }
     ];
 
-    let mapper=[
-        {title:'摘要',data:'summary'},
-        {title:'类型',data:'type'},
-        {title:'摘要',data:'summary'},
-        {title:'科目名称',data:'journals:subjectName'},
-        {title:'方向',data:'journals:direct'},
-        {title:'金额类型',data:'journals:type'}
+    let mapper = [
+        {
+            title: "<input type='checkbox'>", data: 'id', render(data) {
+                return '<input type="checkbox" value="' + data + '">';
+            }
+        },
+        {
+            title: '序号', data: 'id', render(data, index) {
+                return index + 1;
+            }
+        },
+        {title: '摘要', data: 'summary'},
+        {title: '类型', data: 'type'},
+        {title: '摘要', data: 'summary'},
+        {title: '科目名称', data: 'journals:subjectName'},
+        {
+            title: '方向', data: 'journals:direct', render(data) {
+                return data === 1 ? "借" : "贷";
+            }
+        },
+        {title: '金额类型', data: 'journals:type'}
     ];
 
 
-    let theTable=Table.of("#myTable").map(mapper).load(arr);
+    let theTable = Table.of("#myTable").map(mapper).load(arr);
 </script>
