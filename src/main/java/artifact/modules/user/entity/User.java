@@ -32,6 +32,10 @@ public class User extends BaseEntity implements UserState {
         return name;
     }
 
+    /**
+     * 设置用户名
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }

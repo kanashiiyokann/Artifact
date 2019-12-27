@@ -33,7 +33,7 @@ class Icing {
 class Template {
     constructor(temp) {
         this.temp = temp || '';
-        this.reg_ph = /{{.[^{}]+}}/g;
+        this.reg_ph = /({{)[^{}]+(}})/g;
         this.reg_key = /[a-zA-Z]+/;
     }
 
