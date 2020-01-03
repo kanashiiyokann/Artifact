@@ -10,7 +10,10 @@ public class AsmTest {
         UserVisitor.execute();
 
         User user=new User();
-        user.setName("admin");
+        int i=20;
+        while (i-->0){
+            user.setName("admin".concat(String.valueOf(i)));
+        }
 
         System.out.println(user.getName());
 

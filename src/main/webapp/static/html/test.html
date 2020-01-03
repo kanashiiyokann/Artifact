@@ -95,4 +95,49 @@
 
 
     let theTable = Table.of("#myTable").map(mapper).load(arr);
+
+
+    class Test {
+
+        constructor(fn) {
+            this.fn=fn;
+        }
+
+        static of(fn) {
+            return new Test(fn);
+        }
+        catch (fn){
+            this.reject=fn;
+            return this;
+        }
+        then (fn){
+            this.accept=fn;
+            return this;
+        }
+        execute(data){
+        this.fn.call(undefined,this.accept,this.reject,data);
+        }
+
+    }
+
+   let test=     Test.of((accept,reject)=>{
+            let data=Math.floor(Math.random()*1000);
+            if(data%2===0){
+                accept(data);
+            }else{
+                reject(data);
+            }
+        })
+            .catch(data=>console.error("随机数"+data+"不是偶数！")).then(data=>console.log(data));
+            // .next((accept,reject,data)=>{
+            //     if(data%3===0){
+            //         accept(data);
+            //     }else{
+            //         reject(data);
+            //     }
+            //
+            // }).catch(data=>console.error("随机数"+data+"不是偶数！")).then(data=>console.error("随机数"+data+"是一个能被3整除的偶数！"));
+
+    test.execute();
+
 </script>
