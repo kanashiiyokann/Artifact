@@ -1,42 +1,42 @@
 package artifact;
 
-import artifact.modules.common.controller.BaseController;
-import artifact.modules.user.dao.UserDao;
-import artifact.modules.user.entity.User;
+import artifact.modules.user.entity.Log;
+import com.mongodb.ClientSessionOptions;
+import com.mongodb.MongoClient;
+import com.mongodb.client.ClientSession;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MongoTest extends BaseController {
+public class MongoTest {
 
     @Autowired
-    private UserDao userDao;
+    private MongoTemplate template;
+    @Autowired
+    private MongoClient client;
 
     @Test
-    public void doTest() throws Exception {
+    public void sessionTest() throws Exception {
+        ClientSessionOptions sessionOptions= ClientSessionOptions.builder().causallyConsistent(true).build();
+        ClientSession session=client.startSession(sessionOptions);
+        template.withSession(()->session).execute(options->{
+            Query query=new Query(Criteria.where("name").is("tome"));
+            options.remove(query,"user");
+            Log log=new Log();
+            log.setNote("删除名字为tome的用户");
+            options.insert(log,"log");
+            return options;
+        });
 
-        List<User> userList = new ArrayList<>(100);
-
-        for (int i = 1; i <= 10000; i++) {
-            User user = new User();
-            String index = String.valueOf(i);
-            user.setId(Long.valueOf(index));
-            user.setName("user".concat(index));
-            userList.add(user);
-        }
-        long start = System.currentTimeMillis();
-        int count = userDao.insert(userList);
-        long end = System.currentTimeMillis();
-        System.out.println(String.format("%s record inserted,and took %s ms.", count, end - start));
-
+        session.close();
     }
 
 }

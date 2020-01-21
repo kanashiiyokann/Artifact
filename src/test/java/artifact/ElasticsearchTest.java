@@ -1,57 +1,34 @@
 package artifact;
 
-import artifact.modules.item.entity.Item;
-import artifact.modules.item.service.impl.ItemServiceImpl;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.DeleteQuery;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class ElasticsearchTest {
-
-    @Resource
-    private ItemServiceImpl itemService;
+@Autowired
+private ElasticsearchTemplate esTemplate;
 
     @Test
-    public void saveTest() {
+    public void deleteByFeature() {
 
-        Item item = new Item();
-        item.setId(5L);
-        item.setName("head-cha-la");
-        item.setNote("this is a lyric");
-        item.setCreateTime(LocalDateTime.now());
-
-        itemService.save(item);
+        DeleteQuery deleteQuery=new DeleteQuery();
+        deleteQuery.setQuery(QueryBuilders.boolQuery().must(QueryBuilders.termQuery("tags","qiangxiao")));
+        deleteQuery.setIndex("index_test");
+        deleteQuery.setType("product");
+        esTemplate.delete(deleteQuery);
+        if(!esTemplate.indexExists("index_test1")){
+            esTemplate.createIndex("index_test1");
+        }
 
     }
 
-    @Test
-    public void deleteTest() {
 
-        Item item = new Item();
-        item.setId(4L);
-        itemService.delete(item);
-
-    }
-
-    @Test
-    public void searchTest() {
-
-        Map features = new HashMap<String, Object>(1) {{
-            put("id$gte", 2L);
-        }};
-
-        List<Item> retList = itemService.search(features, "index_item");
-        System.out.println(retList);
-
-    }
 }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+　　
+<head>
+    <meta charset="UTF-8">
+    　　　　<title>test</title>
+</head>
+<link rel="stylesheet" href="../css/font_dgg.css">
+<body>
+<div id="container"></div>
+</body>
+</html>
+<script type="text/javascript">
+
+    let regex = /(?!\.)icon-\S+/g;
+    let $body = document.getElementById("container");
+    let rules = [];
+
+    for (let rule of document.styleSheets[0].rules) {
+        rules.push(rule);
+    }
+
+    let htm = rules.map(e => regex.exec(e["selectorText"])).filter(e => e !== null).map(e =>
+        e.toString().replace(/(\:\:before)/g, ''))
+        .map(e => '<i class="iconfont ' + e + '"></i>' + e).join('<br>');
+
+    $body.innerHTML = htm;
+
+
+</script>
+

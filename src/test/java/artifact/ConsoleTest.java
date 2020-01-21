@@ -1,73 +1,42 @@
 package artifact;
 
 
-import artifact.modules.common.entity.LogType;
 import artifact.modules.common.entity.Property;
 import artifact.modules.common.util.Excel2PdfUtil;
+import artifact.modules.common.util.ExcelFactory;
 import artifact.modules.common.util.ExcelUtil;
 import artifact.modules.common.util.ExcelUtil.Style;
 import artifact.modules.user.entity.User;
 import artifact.modules.user.entity.User.UserType;
 import com.alibaba.fastjson.JSON;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.ss.util.CellRangeAddress;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalField;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public class ConsoleTest {
 
     private static Pattern p = Pattern.compile("\\S+");
 
-    public static void excelTest() throws Exception {
-
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
-        HSSFRow row = sheet.createRow(0);
-
-        HSSFCell cell = row.createCell(0);
-        cell.setCellValue("test");
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HorizontalAlignment.CENTER);
-        style.setVerticalAlignment(VerticalAlignment.CENTER);
-        cell.setCellStyle(style);
-        CellRangeAddress range = new CellRangeAddress(0, 3, 0, 3);
-        sheet.addMergedRegion(range);
-
-        File file = new File("C:\\Users\\DGG-S27-D-20\\Desktop\\test\\text.xls");
-
-        FileOutputStream outputStream = new FileOutputStream(file);
-
-        wb.write(outputStream);
-
-        outputStream.close();
-
-    }
-
 
     public static void main(String[] args) throws Exception {
-      test10(1,2,3);
+
+        ExcelFactory excelFactory=ExcelFactory.newInstance();
+        String path= ClassLoader.class.getResource("/template.xls").getPath();
+        excelFactory.select(path,"资产负债表");
+        excelFactory.fetch("C:\\Users\\DGG-S27-D-20\\Desktop\\test.xls");
+
 
     }
 
     public static void test() throws Exception {
+        String str = "userOrgName".replaceAll("[A-Z]", "_$0").toLowerCase();
+        System.out.println(str);
 
         Long number = null;
         number = Optional.ofNullable(number).orElseGet(() -> {
@@ -83,10 +52,10 @@ public class ConsoleTest {
 
     public static void test10(Object... args) throws Exception {
 
-        String temp="_%s_%s_%s_%s_%s_";
-        int len=temp.concat("%s").length()-1-args.length;
+        String temp = "_%s_%s_%s_%s_%s_";
+        int len = temp.concat("%s").length() - 1 - args.length;
 
-      System.out.println( String.format(temp,args));
+        System.out.println(String.format(temp, args));
 
     }
 

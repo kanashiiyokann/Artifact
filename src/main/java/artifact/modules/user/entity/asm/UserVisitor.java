@@ -4,6 +4,9 @@ import artifact.modules.user.entity.User;
 
 import org.objectweb.asm.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
 public class UserVisitor extends ClassVisitor {
 
     public UserVisitor( ClassVisitor classVisitor) {
@@ -30,13 +33,19 @@ public class UserVisitor extends ClassVisitor {
 
     public static void execute() throws Exception{
 
-        ClassReader classReader = new ClassReader(User.class.getName());
-        ClassWriter classWriter = new ClassWriter(classReader,ClassWriter.COMPUTE_MAXS);
-
+        ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         UserVisitor userVisitor = new UserVisitor(classWriter);
-        classReader.accept(userVisitor,ClassReader.SKIP_DEBUG);
+        ClassReader classReader=new ClassReader("artifact.modules.user.entity.User");
+        classReader.accept(userVisitor,0);
 
-        classWriter.visitEnd();
+        File file=new File("artifact/modules/user/entity/User.class");
+        String path=file.getParent();
+        File parent=new File(path);
+        parent.mkdirs();
+        file.createNewFile();
+        FileOutputStream fileOutputStream=new FileOutputStream(file);
+        fileOutputStream.write(classWriter.toByteArray());
+
     }
 
 }
