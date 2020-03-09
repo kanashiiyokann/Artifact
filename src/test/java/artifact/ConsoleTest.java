@@ -26,12 +26,15 @@ public class ConsoleTest {
 
     public static void main(String[] args) throws Exception {
 
-        ExcelFactory excelFactory=ExcelFactory.newInstance();
-        String path= ClassLoader.class.getResource("/template.xls").getPath();
-        excelFactory.select(path,"资产负债表");
+        ExcelFactory excelFactory = ExcelFactory.newInstance();
+
+        String path = ClassLoader.class.getResource("/template.xls").getPath();
+        excelFactory.select(path, "资产负债表");
         excelFactory.fetch("C:\\Users\\DGG-S27-D-20\\Desktop\\test.xls");
 
-
+         path = ClassLoader.class.getResource("/template.xlsx").getPath();
+        excelFactory.select(path, "资产负债表");
+        excelFactory.fetch("C:\\Users\\DGG-S27-D-20\\Desktop\\test.xlsx");
     }
 
     public static void test() throws Exception {
