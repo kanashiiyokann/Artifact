@@ -7,6 +7,10 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NotNull {
-    String value() default "参数值不能为null!";
+public @interface Validate {
+    String value() default "null";
+
+    boolean notNull() default false;
+
+    int length() default -1;
 }

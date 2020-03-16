@@ -1,8 +1,10 @@
 package artifact.modules.user.service;
 
+import artifact.modules.common.annotation.Validate;
 import artifact.modules.common.dao.BaseMongoDao.Strategy;
 import artifact.modules.user.dao.UserDao;
 import artifact.modules.user.entity.User;
+import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,7 +37,7 @@ public class UserService {
 
     }
 
-    public User findById(Long id){
+    public User findById(@Validate(notNull = true,length = 10) Long id) {
         return userDao.find(id);
     }
 }

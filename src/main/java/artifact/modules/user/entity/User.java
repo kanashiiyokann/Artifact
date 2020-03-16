@@ -25,15 +25,18 @@ public class User extends BaseEntity implements UserState {
     public Integer getState() {
         return state;
     }
+
     public void setState(Integer state) {
         this.state = state;
     }
+
     public String getName() {
         return name;
     }
 
     /**
      * 设置用户名
+     *
      * @param name
      */
     public void setName(String name) {

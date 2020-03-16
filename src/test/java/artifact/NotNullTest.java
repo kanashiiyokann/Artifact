@@ -1,6 +1,6 @@
 package artifact;
 
-import artifact.modules.common.annotation.NotNull;
+import artifact.modules.common.annotation.Validate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ public class NotNullTest {
     }
 
 
-    public void printSomething(@NotNull String str) {
+    public void printSomething(@Validate String str) {
 
         System.out.println(str);
     }
